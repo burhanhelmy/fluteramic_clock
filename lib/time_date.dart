@@ -23,8 +23,8 @@ class _TimeDateState extends State<TimeDate> {
                   fontWeight: FontWeight.w900,
                   shadows: [
                     Shadow(
-                      color: Colors.black54,
-                      blurRadius: 200,
+                      color: Colors.black26,
+                      blurRadius: 100,
                     )
                   ]),
             ),
@@ -33,11 +33,11 @@ class _TimeDateState extends State<TimeDate> {
               style: TextStyle(
                   color: Colors.white,
                   fontSize: 80,
-                  fontWeight: FontWeight.w500,
+                  fontWeight: FontWeight.w900,
                   shadows: [
                     Shadow(
                       color: Colors.black,
-                      blurRadius: 100,
+                      blurRadius: 1,
                     )
                   ]),
             ),
