@@ -9,6 +9,7 @@ class Panoramic extends StatefulWidget {
 class _PanoramicState extends State<Panoramic>
     with SingleTickerProviderStateMixin {
   AnimationController _controller;
+  double _percentage = 0;
 
   @override
   void initState() {
@@ -21,41 +22,44 @@ class _PanoramicState extends State<Panoramic>
 
   @override
   Widget build(BuildContext context) {
-    return AnimatedBuilder(
-      animation: _controller,
-      builder: (BuildContext context, Widget child) {
-        return CustomPaint(
-          painter: PanoramicPainter(10),
-          child: Container(
-              // color:
-              //     background.evaluate(AlwaysStoppedAnimation(_controller.value)),
+    // return AnimatedBuilder(
+    //   animation: _controller,
+    //   builder: (BuildContext context, Widget child) {
+    return CustomPaint(
+      painter: PanoramicPainter(_percentage),
+      child: Container(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.end,
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: <Widget>[
+            Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: Row(
+                children: <Widget>[
+                  Text(
+                    'AM',
+                    style: TextStyle(color: Colors.white, fontSize: 30),
+                  ),
+                  Expanded(
+                    child: Slider(
+                      onChanged: (double newPercentage) {
+                        setState(() => {_percentage = newPercentage});
+                      },
+                      value: _percentage,
+                    ),
+                  ),
+                  Text(
+                    'PM',
+                    style: TextStyle(color: Colors.white, fontSize: 30),
+                  ),
+                ],
               ),
-        );
-      },
+            ),
+          ],
+        ),
+      ),
     );
+    //   },
+    // );
   }
-
-  Animatable<Color> background = TweenSequence<Color>([
-    TweenSequenceItem(
-      weight: 1.0,
-      tween: ColorTween(
-        begin: Colors.red,
-        end: Colors.green,
-      ),
-    ),
-    TweenSequenceItem(
-      weight: 1.0,
-      tween: ColorTween(
-        begin: Colors.green,
-        end: Colors.blue,
-      ),
-    ),
-    TweenSequenceItem(
-      weight: 1.0,
-      tween: ColorTween(
-        begin: Colors.blue,
-        end: Colors.pink,
-      ),
-    ),
-  ]);
 }

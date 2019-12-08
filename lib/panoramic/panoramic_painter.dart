@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 
 class PanoramicPainter extends CustomPainter {
-  int percentage;
+  double percentage;
   PanoramicPainter(this.percentage);
 
   _drawSky(Canvas canvas, Size size) {
@@ -10,7 +10,10 @@ class PanoramicPainter extends CustomPainter {
     var skyGradient = LinearGradient(
       begin: Alignment.topCenter,
       end: Alignment.bottomCenter,
-      colors: [Color(0xFFB1EAFF), Color(0xFFA6FFEF)],
+      colors: [
+        Color.lerp(Color(0xFFB1EAFF), Colors.indigo, percentage),
+        Color.lerp(Color(0xFFA6FFEF), Colors.red, percentage)
+      ],
       stops: [0, 1],
     );
     canvas.drawRect(
@@ -22,15 +25,15 @@ class PanoramicPainter extends CustomPainter {
   _drawSun(Canvas canvas, Size size) {
     var sun = Offset.zero & size;
     var sunGradient = RadialGradient(
-      center: const Alignment(0.4, -.8),
-      radius: 1,
+      center: Alignment((percentage) - 0.25,
+          _parabolicYValue(percentage) + 0.2), // added offset
+      radius: 1 - (0.5 * percentage),
       colors: [
-        const Color(0xFFFFFFFF),
-        const Color(0xFFFFC400),
-        Colors.transparent,
+        Color.lerp(Color(0xFFFFFFFF), Colors.red, percentage),
+        Color.lerp(Color(0xFFFFC400), Colors.transparent, percentage),
         Colors.transparent
       ],
-      stops: [0.1, 0.05, 0.15, 1],
+      stops: [0.1, 0.09, 1],
     );
     canvas.drawRect(
         sun,
@@ -44,7 +47,10 @@ class PanoramicPainter extends CustomPainter {
     var seaGradient = LinearGradient(
       begin: Alignment.topCenter,
       end: Alignment.bottomCenter,
-      colors: [Color(0xFF268F92), Color(0xFF00484B)],
+      colors: [
+        Color.lerp(Color(0xFF268F92), Colors.red[900], percentage),
+        Color.lerp(Color(0xFF00484B), Colors.indigo, percentage)
+      ],
       stops: [0, .8],
     );
 
@@ -59,7 +65,10 @@ class PanoramicPainter extends CustomPainter {
     var mountainGradient = LinearGradient(
       begin: Alignment.bottomLeft,
       end: Alignment.topRight,
-      colors: [Color(0xFF6E8300), Colors.green],
+      colors: [
+        Color.lerp(Color(0xFF6E8300), Colors.brown[900], percentage),
+        Color.lerp(Colors.green, Colors.brown[900], percentage)
+      ],
       stops: [0, 1],
     );
 
@@ -86,7 +95,10 @@ class PanoramicPainter extends CustomPainter {
     var mountainGradient = LinearGradient(
       begin: Alignment.bottomLeft,
       end: Alignment.topRight,
-      colors: [Color(0xFFA0BE00), Color(0xFFA0BE00)],
+      colors: [
+        Color.lerp(Colors.lime[600], Colors.brown[700], percentage),
+        Color.lerp(Colors.lime[500], Colors.brown[700], percentage)
+      ],
       stops: [0, 1],
     );
 
@@ -111,7 +123,10 @@ class PanoramicPainter extends CustomPainter {
     var mountainGradient = LinearGradient(
       begin: Alignment.bottomLeft,
       end: Alignment.topRight,
-      colors: [Color(0xFFE7FFFD), Color(0xFFE7FFFD)],
+      colors: [
+        Color.lerp(Color(0xFFE7FFFD), Colors.red[100], percentage),
+        Color.lerp(Color(0xFFE7FFFD), Colors.red[100], percentage)
+      ],
       stops: [0, 1],
     );
 
@@ -135,7 +150,10 @@ class PanoramicPainter extends CustomPainter {
     var mountainGradient = LinearGradient(
       begin: Alignment.bottomLeft,
       end: Alignment.topRight,
-      colors: [Color(0xFF00A1BE), Color(0xFF00A1BE)],
+      colors: [
+        Color.lerp(Color(0xFF00A1BE), Colors.red, percentage),
+        Color.lerp(Color(0xFF00A1BE), Colors.red, percentage)
+      ],
       stops: [0, 1],
     );
 
@@ -152,6 +170,15 @@ class PanoramicPainter extends CustomPainter {
           ..shader = mountainGradient.createShader(mountainShaderContainer));
   }
 
+  _parabolicYValue(xVal) {
+    const a = 0;
+    const b = 1;
+    var yVal = (-4 * (-0.9) / ((a - b) * (a - b))) *
+        ((xVal * xVal) - ((a + b) * xVal) + (a * b));
+    print(xVal.toString() + ',' + yVal.toString());
+    return yVal;
+  }
+
   _drawShip(Canvas canvas, Size size) {
     var sea = Offset.zero.translate(size.width * 0.8, size.height * 0.7) &
         Size(size.width * 0.08, size.height * 0.04);
@@ -162,11 +189,32 @@ class PanoramicPainter extends CustomPainter {
       colors: [Color(0xFFFFFFFF), Color(0xFFFFFFFFF)],
       stops: [0, .8],
     );
-
     canvas.drawRect(
       sea,
       Paint()..shader = seaGradient.createShader(sea),
     );
+  }
+
+// TODO:Remove debug text
+  _drawDebugText(Canvas canvas, Size size) {
+    final textStyle = TextStyle(
+      color: Colors.black,
+      fontSize: 30,
+    );
+    final textSpan = TextSpan(
+      text: percentage.toString(),
+      style: textStyle,
+    );
+    final textPainter = TextPainter(
+      text: textSpan,
+      textDirection: TextDirection.ltr,
+    );
+    textPainter.layout(
+      minWidth: 0,
+      maxWidth: size.width,
+    );
+    final offset = Offset(50, 100);
+    textPainter.paint(canvas, offset);
   }
 
   @override
@@ -179,37 +227,9 @@ class PanoramicPainter extends CustomPainter {
     _drawSmallMountain(canvas, size);
     _drawLand(canvas, size);
     _drawSmallLand(canvas, size);
+    // _drawDebugText(canvas, size);
   }
 
-  @override
-  SemanticsBuilderCallback get semanticsBuilder {
-    return (Size size) {
-      // Annotate a rectangle containing the picture of the sun
-      // with the label "Sun". When text to speech feature is enabled on the
-      // device, a user will be able to locate the sun on this picture by
-      // touch.
-      // var rect = Offset.zero & size;
-      // var width = size.shortestSide * 0.4;
-      // rect = const Alignment(0.8, -0.9).inscribe(Size(width, width), rect);
-      // return [
-      //   CustomPainterSemantics(
-      //     rect: rect,
-      //     properties: SemanticsProperties(
-      //       label: 'Sun',
-      //       textDirection: TextDirection.ltr,
-      //     ),
-      //   ),
-      // ];
-    };
-  }
-
-  // Since this Sky painter has no fields, it always paints
-  // the same thing and semantics information is the same.
-  // Therefore we return false here. If we had fields (set
-  // from the constructor) then we would return true if any
-  // of them differed from the same fields on the oldDelegate.
   @override
   bool shouldRepaint(PanoramicPainter oldDelegate) => false;
-  @override
-  bool shouldRebuildSemantics(PanoramicPainter oldDelegate) => false;
 }
