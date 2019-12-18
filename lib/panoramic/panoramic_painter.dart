@@ -1,34 +1,82 @@
-import 'package:fluteramic_clock/panoramic/color_const.dart';
+import 'dart:math';
+
+import 'package:fluteramic_clock/panoramic/panoramic_colors.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 
+enum ColorFor {
+  sky,
+  sea,
+  mountain,
+  smallMountain,
+  backgroundLand,
+  smallBackgroundLand,
+}
+
 class PanoramicPainter extends CustomPainter {
-  double percentage;
-  PanoramicPainter(this.percentage);
-  double nightPercentage;
-  double dayPercentage;
+  double fullDayPercentage;
+  PanoramicPainter(this.fullDayPercentage);
+  double _nightTimePercentage;
+  double _dayTimePercentage;
+
+  _getColors(ColorFor colorFor) {
+    var colors;
+    switch (colorFor) {
+      case ColorFor.sky:
+        colors = SkyColors();
+        break;
+      case ColorFor.sea:
+        colors = SeaColors();
+        break;
+      case ColorFor.mountain:
+        colors = MountainColors();
+        break;
+      case ColorFor.smallMountain:
+        colors = SmallMountainColors();
+        break;
+      case ColorFor.backgroundLand:
+        colors = BackgroundLandColors();
+        break;
+      case ColorFor.smallBackgroundLand:
+        colors = SmallBackgroundLandColors();
+        break;
+      default:
+    }
+
+    return [
+      Color.lerp(
+          colors.primary[
+              (fullDayPercentage * 100) - ((fullDayPercentage * 100) % 25)],
+          colors.primary[(fullDayPercentage * 100) -
+                      ((fullDayPercentage * 100) % 25) +
+                      25 <
+                  100
+              ? (fullDayPercentage * 100) -
+                  ((fullDayPercentage * 100) % 25) +
+                  25
+              : 0],
+          calculateSessionPecentage),
+      Color.lerp(
+          colors.secondary[
+              (fullDayPercentage * 100) - ((fullDayPercentage * 100) % 25)],
+          colors.secondary[(fullDayPercentage * 100) -
+                      ((fullDayPercentage * 100) % 25) +
+                      25 <
+                  100
+              ? (fullDayPercentage * 100) -
+                  ((fullDayPercentage * 100) % 25) +
+                  25
+              : 0],
+          calculateSessionPecentage),
+    ];
+  }
 
   _drawSky(Canvas canvas, Size size) {
     var sky = Offset.zero & Size(size.width, size.height / 2);
     var skyGradient = LinearGradient(
       begin: Alignment.topCenter,
       end: Alignment.bottomCenter,
-      colors: [
-        Color.lerp(
-            skyColorsPrimary[(percentage * 100) - ((percentage * 100) % 25)],
-            skyColorsPrimary[
-                (percentage * 100) - ((percentage * 100) % 25) + 25 < 100
-                    ? (percentage * 100) - ((percentage * 100) % 25) + 25
-                    : 0],
-            calculateSessionPecentage),
-        Color.lerp(
-            skyColorsSecondary[(percentage * 100) - ((percentage * 100) % 25)],
-            skyColorsSecondary[
-                (percentage * 100) - ((percentage * 100) % 25) + 25 < 100
-                    ? (percentage * 100) - ((percentage * 100) % 25) + 25
-                    : 0],
-            calculateSessionPecentage),
-      ],
+      colors: _getColors(ColorFor.sky),
       stops: [0, 1],
     );
     canvas.drawRect(
@@ -38,15 +86,16 @@ class PanoramicPainter extends CustomPainter {
   }
 
   _drawSun(Canvas canvas, Size size) {
-    dayPercentage = ((percentage) / 0.50);
+    _dayTimePercentage = ((fullDayPercentage) / 0.50);
+    var sunXValue = _dayTimePercentage;
     var sun = Offset.zero & size;
     var sunGradient = RadialGradient(
-      center: Alignment((dayPercentage) - 0.25,
-          _parabolicYValue(dayPercentage) + 0.2), // added offset
-      radius: 1 - (0.5 * dayPercentage),
+      center: Alignment(
+          (sunXValue) - 0.25, _getSunYValue(sunXValue) + 0.2), // added offset
+      radius: 1 - (0.5 * _dayTimePercentage),
       colors: [
-        Color.lerp(Color(0xFFFFFFFF), Colors.red, dayPercentage),
-        Color.lerp(Color(0xFFFFC400), Colors.transparent, dayPercentage),
+        Color.lerp(Color(0xFFFFFFFF), Colors.red, _dayTimePercentage),
+        Color.lerp(Color(0xFFFFC400), Colors.transparent, _dayTimePercentage),
         Colors.transparent
       ],
       stops: [0.1, 0.09, 1],
@@ -58,15 +107,40 @@ class PanoramicPainter extends CustomPainter {
           ..blendMode = BlendMode.overlay);
   }
 
+  _getMoonOpacity(_nightTimePercentage) {
+    return (-4 * pow((_nightTimePercentage), 2)) + (4 * _nightTimePercentage);
+  }
+
+  _drawMoon(Canvas canvas, Size size) {
+    _nightTimePercentage =
+        fullDayPercentage > .5 ? ((fullDayPercentage - 0.50) / 0.50) : 0;
+    var moon = Offset.zero & size;
+    var moonGradient = RadialGradient(
+      center: Alignment(0.38, -0.5 * fullDayPercentage - 0.25), // added offset
+      radius: 0.12 * _nightTimePercentage,
+      colors: [
+        Colors.transparent,
+        Color.fromRGBO(255, 255, 46, _getMoonOpacity(_nightTimePercentage)),
+      ],
+      stops: [0.5, 0.4],
+    );
+    canvas.drawCircle(
+        Offset.zero
+            .translate(size.width / 1.5, size.width / 7.3), //ok for tablet
+        70 * _nightTimePercentage,
+        Paint()
+          ..strokeWidth = 30
+          ..strokeCap = StrokeCap.round
+          ..shader = moonGradient.createShader(moon)
+          ..blendMode = BlendMode.hardLight);
+  }
+
   _drawSea(Canvas canvas, Size size) {
     var sea = Offset.zero.translate(0, size.height / 2) & size;
     var seaGradient = LinearGradient(
       begin: Alignment.topCenter,
       end: Alignment.bottomCenter,
-      colors: [
-        Color.lerp(Color(0xFF268F92), Colors.red[900], percentage),
-        Color.lerp(Color(0xFF00484B), Colors.indigo, percentage)
-      ],
+      colors: _getColors(ColorFor.sea),
       stops: [0, .8],
     );
 
@@ -81,10 +155,7 @@ class PanoramicPainter extends CustomPainter {
     var mountainGradient = LinearGradient(
       begin: Alignment.bottomLeft,
       end: Alignment.topRight,
-      colors: [
-        Color.lerp(Color(0xFF6E8300), Colors.brown[900], percentage),
-        Color.lerp(Colors.green, Colors.brown[900], percentage)
-      ],
+      colors: _getColors(ColorFor.mountain),
       stops: [0, 1],
     );
 
@@ -100,7 +171,6 @@ class PanoramicPainter extends CustomPainter {
     canvas.drawPath(
         mountainPath,
         Paint()
-          ..color = Colors.green
           ..shader = mountainGradient.createShader(mountainShaderContainer));
   }
 
@@ -111,10 +181,7 @@ class PanoramicPainter extends CustomPainter {
     var mountainGradient = LinearGradient(
       begin: Alignment.bottomLeft,
       end: Alignment.topRight,
-      colors: [
-        Color.lerp(Colors.lime[600], Colors.brown[700], percentage),
-        Color.lerp(Colors.lime[500], Colors.brown[700], percentage)
-      ],
+      colors: _getColors(ColorFor.smallMountain),
       stops: [0, 1],
     );
 
@@ -128,21 +195,17 @@ class PanoramicPainter extends CustomPainter {
     canvas.drawPath(
         smallMountainPath,
         Paint()
-          ..color = Colors.greenAccent
           ..shader = mountainGradient.createShader(mountainShaderContainer));
   }
 
-  _drawLand(Canvas canvas, Size size) {
+  _drawBackgroundLand(Canvas canvas, Size size) {
     var land = Path();
     var mountainShaderContainer =
         Offset.zero.translate(0, size.height / 2) & size;
     var mountainGradient = LinearGradient(
-      begin: Alignment.bottomLeft,
-      end: Alignment.topRight,
-      colors: [
-        Color.lerp(Color(0xFFE7FFFD), Colors.red[100], percentage),
-        Color.lerp(Color(0xFFE7FFFD), Colors.red[100], percentage)
-      ],
+      begin: Alignment.topRight,
+      end: Alignment.bottomLeft,
+      colors: _getColors(ColorFor.backgroundLand),
       stops: [0, 1],
     );
 
@@ -150,53 +213,27 @@ class PanoramicPainter extends CustomPainter {
     land.lineTo(size.width * 0.8, size.height * 0.5);
     land.quadraticBezierTo(
         size.width * 0.95, size.height * 0.48, size.width, size.height * 0.4);
-
     land.close();
     canvas.drawPath(
         land,
         Paint()
-          ..color = Colors.greenAccent
           ..shader = mountainGradient.createShader(mountainShaderContainer));
   }
 
-  _drawMoon(Canvas canvas, Size size) {
-    nightPercentage = ((percentage - 0.25) / 0.80);
-    var moon = Offset.zero & size;
-    var moonGradient = RadialGradient(
-      center: Alignment(0.38, -0.72 * percentage - 0.25), // added offset
-      radius: 0.12,
-      colors: [
-        Colors.transparent,
-        Color.fromRGBO(255, 255, 46, nightPercentage > 0 ? nightPercentage : 0),
-      ],
-      stops: [0.5, 0.4],
-    );
-    canvas.drawCircle(
-        Offset.zero.translate(size.width / 1.5, size.height / 6),
-        70,
-        Paint()
-          ..strokeWidth = 30
-          ..strokeCap = StrokeCap.round
-          ..shader = moonGradient.createShader(moon)
-          ..blendMode = BlendMode.hardLight);
-  }
-
   get calculateSessionPecentage {
-    var sectionVal = ((percentage * 100) - ((percentage * 100) % 25)).toInt();
-    return (percentage - (sectionVal / 100)) / 0.25;
+    var sectionVal =
+        ((fullDayPercentage * 100) - ((fullDayPercentage * 100) % 25)).toInt();
+    return (fullDayPercentage - (sectionVal / 100)) / 0.25;
   }
 
-  _drawSmallLand(Canvas canvas, Size size) {
+  _drawSmallBackgroundLand(Canvas canvas, Size size) {
     var land = Path();
     var mountainShaderContainer =
         Offset.zero.translate(0, size.height / 2) & size;
     var mountainGradient = LinearGradient(
-      begin: Alignment.bottomLeft,
-      end: Alignment.topRight,
-      colors: [
-        Color.lerp(Color(0xFF00A1BE), Colors.red, percentage),
-        Color.lerp(Color(0xFF00A1BE), Colors.red, percentage)
-      ],
+      begin: Alignment.topRight,
+      end: Alignment.bottomLeft,
+      colors: _getColors(ColorFor.smallBackgroundLand),
       stops: [0, 1],
     );
 
@@ -204,16 +241,14 @@ class PanoramicPainter extends CustomPainter {
     land.lineTo(size.width * 0.9, size.height * 0.5);
     land.quadraticBezierTo(
         size.width * 0.98, size.height * 0.48, size.width, size.height * 0.45);
-
     land.close();
     canvas.drawPath(
         land,
         Paint()
-          ..color = Colors.greenAccent
           ..shader = mountainGradient.createShader(mountainShaderContainer));
   }
 
-  _parabolicYValue(xVal) {
+  _getSunYValue(xVal) {
     const a = 0;
     const b = 1;
     var yVal = (-4 * (-0.9) / ((a - b) * (a - b))) *
@@ -225,12 +260,12 @@ class PanoramicPainter extends CustomPainter {
   void paint(Canvas canvas, Size size) {
     _drawSky(canvas, size);
     _drawSun(canvas, size);
+    _drawMoon(canvas, size);
     _drawSea(canvas, size);
     _drawMountain(canvas, size);
     _drawSmallMountain(canvas, size);
-    _drawLand(canvas, size);
-    _drawSmallLand(canvas, size);
-    _drawMoon(canvas, size);
+    _drawBackgroundLand(canvas, size);
+    _drawSmallBackgroundLand(canvas, size);
   }
 
   @override
