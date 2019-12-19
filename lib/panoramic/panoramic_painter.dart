@@ -1,6 +1,6 @@
 import 'dart:math';
-
 import 'package:fluteramic_clock/panoramic/panoramic_colors.dart';
+import 'package:fluteramic_clock/panoramic/provider/stars_config.provider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 
@@ -14,10 +14,12 @@ enum ColorFor {
 }
 
 class PanoramicPainter extends CustomPainter {
-  double fullDayPercentage;
   PanoramicPainter(this.fullDayPercentage);
-  double _nightTimePercentage;
+  double fullDayPercentage = 0;
+  double _nightTimePercentage = 0;
   double _dayTimePercentage;
+  StarsConfigProvider _starConfig = StarsConfigProvider();
+  Random rnd = Random();
 
   _getColors(ColorFor colorFor) {
     var colors;
@@ -135,6 +137,29 @@ class PanoramicPainter extends CustomPainter {
           ..blendMode = BlendMode.hardLight);
   }
 
+  _getStarOpacity() {
+    return (rnd.nextInt(
+            1 + (_getMoonOpacity(_nightTimePercentage) * 100).round()) /
+        100);
+  }
+
+  _drawStars(Canvas canvas, Size size) {
+    if (fullDayPercentage == 0) {
+      _starConfig.resetSettings();
+    }
+    if (_starConfig.state == ConfigState.NULL) {
+      _starConfig.generateStarSettings(size);
+    }
+    _starConfig.starsPositions.forEach((starInfo) => (canvas.drawRect(
+        Offset.zero.translate(starInfo.coordinate[0], starInfo.coordinate[1]) &
+            Size((size.height / 120), (size.height / 120)),
+        Paint()
+          ..strokeWidth = 30
+          ..strokeCap = StrokeCap.round
+          ..color = Color.fromRGBO(255, 255, 46, _getStarOpacity())
+          ..blendMode = BlendMode.hardLight)));
+  }
+
   _drawSea(Canvas canvas, Size size) {
     var sea = Offset.zero.translate(0, size.height / 2) & size;
     var seaGradient = LinearGradient(
@@ -171,6 +196,7 @@ class PanoramicPainter extends CustomPainter {
     canvas.drawPath(
         mountainPath,
         Paint()
+          ..isAntiAlias
           ..shader = mountainGradient.createShader(mountainShaderContainer));
   }
 
@@ -195,6 +221,7 @@ class PanoramicPainter extends CustomPainter {
     canvas.drawPath(
         smallMountainPath,
         Paint()
+          ..isAntiAlias
           ..shader = mountainGradient.createShader(mountainShaderContainer));
   }
 
@@ -261,6 +288,7 @@ class PanoramicPainter extends CustomPainter {
     _drawSky(canvas, size);
     _drawSun(canvas, size);
     _drawMoon(canvas, size);
+    _drawStars(canvas, size);
     _drawSea(canvas, size);
     _drawMountain(canvas, size);
     _drawSmallMountain(canvas, size);
@@ -269,5 +297,5 @@ class PanoramicPainter extends CustomPainter {
   }
 
   @override
-  bool shouldRepaint(PanoramicPainter oldDelegate) => false;
+  bool shouldRepaint(PanoramicPainter oldDelegate) => true;
 }

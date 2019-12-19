@@ -1,5 +1,5 @@
+import 'package:fluteramic_clock/date_time/date_time.dart';
 import 'package:fluteramic_clock/panoramic/panoramic.dart';
-import 'package:fluteramic_clock/time_date.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 
@@ -14,7 +14,7 @@ class _ClockFaceState extends State<ClockFace> {
     return Scaffold(
       body: Stack(children: [
         Panoramic(),
-        // TimeDate(),
+        DateTimeWidget(),
       ]),
     );
   }
