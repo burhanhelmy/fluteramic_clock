@@ -16,18 +16,20 @@ class StarsConfig {
   int starsCount = 0;
   StarConfigState state = StarConfigState.NULL;
   List<StarInfo> starsPositions = [];
-  Random rnd = Random();
+  Random _rnd = Random();
   bool starOpacityGeneratorIsRunning = false;
   MoonConfig _moonConfig = MoonConfig();
 
   StarsConfig._internal();
 
   generateStarSettings(Size size) {
-    starsCount = (50 + rnd.nextInt(100));
+    starsCount = (50 + _rnd.nextInt(100));
     for (var i = 0; i < starsCount; i++) {
-      var xpos = (0 + rnd.nextInt(size.width.toInt())).toDouble();
-      var ypos = (0 + rnd.nextInt(size.height.toInt() ~/ 2)).toDouble();
-      starsPositions.add(StarInfo([xpos, ypos], 0.1));
+      var xpos = (_rnd.nextInt(size.width.toInt())).toDouble();
+      var ypos = (_rnd.nextInt(size.height.toInt() ~/ 2)).toDouble();
+      var starSize = 2 * _rnd.nextDouble();
+      print(starSize);
+      starsPositions.add(StarInfo([xpos, ypos], 0.1, starSize));
     }
     if (!starOpacityGeneratorIsRunning) {
       startRegenerateStarOpacity();
@@ -36,7 +38,7 @@ class StarsConfig {
   }
 
   get _getStarOpacity {
-    return (rnd.nextInt(1 + (_moonConfig.getMoonOpacity() * 100).round()) /
+    return (_rnd.nextInt(1 + (_moonConfig.getMoonOpacity() * 100).round()) /
         100);
   }
 
@@ -57,7 +59,8 @@ class StarsConfig {
 }
 
 class StarInfo {
-  StarInfo(this.coordinate, this.opacity);
+  StarInfo(this.coordinate, this.opacity, this.size);
   List<double> coordinate = [];
   double opacity = 0;
+  double size = 0;
 }

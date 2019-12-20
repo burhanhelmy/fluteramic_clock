@@ -140,13 +140,17 @@ class PanoramicPainter extends CustomPainter {
     if (_starConfig.state == StarConfigState.NULL) {
       _starConfig.generateStarSettings(size);
     }
-    _starConfig.starsPositions.forEach((starInfo) => (canvas.drawCircle(
-        Offset.zero.translate(starInfo.coordinate[0], starInfo.coordinate[1]),
-        2 * _rnd.nextDouble(),
-        Paint()
-          ..strokeWidth = 30
-          ..strokeCap = StrokeCap.round
-          ..color = Color.fromRGBO(255, 255, 46, starInfo.opacity))));
+    _starConfig.starsPositions.forEach((starInfo) => {
+          // print(starInfo.size),
+          canvas.drawCircle(
+              Offset.zero
+                  .translate(starInfo.coordinate[0], starInfo.coordinate[1]),
+              starInfo.size,
+              Paint()
+                ..strokeWidth = 30
+                ..strokeCap = StrokeCap.round
+                ..color = Color.fromRGBO(255, 255, 46, starInfo.opacity))
+        });
   }
 
   _drawSea(Canvas canvas, Size size) {
