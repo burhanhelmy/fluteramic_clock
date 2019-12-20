@@ -1,6 +1,8 @@
 import 'dart:math';
 import 'package:fluteramic_clock/panoramic/panoramic_colors.dart';
-import 'package:fluteramic_clock/panoramic/provider/stars_config.provider.dart';
+import 'package:fluteramic_clock/panoramic/provider/day_night_config.dart';
+import 'package:fluteramic_clock/panoramic/provider/moon_config.dart';
+import 'package:fluteramic_clock/panoramic/provider/stars_config.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 
@@ -14,12 +16,13 @@ enum ColorFor {
 }
 
 class PanoramicPainter extends CustomPainter {
-  PanoramicPainter(this.fullDayPercentage);
-  double fullDayPercentage = 0;
+  StarsConfig _starConfig = StarsConfig();
+  MoonConfig _moonConfig = MoonConfig();
+  DayNightConfig _dayNightConfig = DayNightConfig();
+  double _fullDayPercentage = 0;
   double _nightTimePercentage = 0;
-  double _dayTimePercentage;
-  StarsConfigProvider _starConfig = StarsConfigProvider();
-  Random rnd = Random();
+  double _dayTimePercentage = 0;
+  Random _rnd = Random();
 
   _getColors(ColorFor colorFor) {
     var colors;
@@ -48,25 +51,25 @@ class PanoramicPainter extends CustomPainter {
     return [
       Color.lerp(
           colors.primary[
-              (fullDayPercentage * 100) - ((fullDayPercentage * 100) % 25)],
-          colors.primary[(fullDayPercentage * 100) -
-                      ((fullDayPercentage * 100) % 25) +
+              (_fullDayPercentage * 100) - ((_fullDayPercentage * 100) % 25)],
+          colors.primary[(_fullDayPercentage * 100) -
+                      ((_fullDayPercentage * 100) % 25) +
                       25 <
                   100
-              ? (fullDayPercentage * 100) -
-                  ((fullDayPercentage * 100) % 25) +
+              ? (_fullDayPercentage * 100) -
+                  ((_fullDayPercentage * 100) % 25) +
                   25
               : 0],
           calculateSessionPecentage),
       Color.lerp(
           colors.secondary[
-              (fullDayPercentage * 100) - ((fullDayPercentage * 100) % 25)],
-          colors.secondary[(fullDayPercentage * 100) -
-                      ((fullDayPercentage * 100) % 25) +
+              (_fullDayPercentage * 100) - ((_fullDayPercentage * 100) % 25)],
+          colors.secondary[(_fullDayPercentage * 100) -
+                      ((_fullDayPercentage * 100) % 25) +
                       25 <
                   100
-              ? (fullDayPercentage * 100) -
-                  ((fullDayPercentage * 100) % 25) +
+              ? (_fullDayPercentage * 100) -
+                  ((_fullDayPercentage * 100) % 25) +
                   25
               : 0],
           calculateSessionPecentage),
@@ -88,7 +91,6 @@ class PanoramicPainter extends CustomPainter {
   }
 
   _drawSun(Canvas canvas, Size size) {
-    _dayTimePercentage = ((fullDayPercentage) / 0.50);
     var sunXValue = _dayTimePercentage;
     var sun = Offset.zero & size;
     var sunGradient = RadialGradient(
@@ -109,20 +111,14 @@ class PanoramicPainter extends CustomPainter {
           ..blendMode = BlendMode.overlay);
   }
 
-  _getMoonOpacity(_nightTimePercentage) {
-    return (-4 * pow((_nightTimePercentage), 2)) + (4 * _nightTimePercentage);
-  }
-
   _drawMoon(Canvas canvas, Size size) {
-    _nightTimePercentage =
-        fullDayPercentage > .5 ? ((fullDayPercentage - 0.50) / 0.50) : 0;
     var moon = Offset.zero & size;
     var moonGradient = RadialGradient(
-      center: Alignment(0.38, -0.5 * fullDayPercentage - 0.25), // added offset
+      center: Alignment(0.38, -0.5 * _fullDayPercentage - 0.25), // added offset
       radius: 0.12 * _nightTimePercentage,
       colors: [
         Colors.transparent,
-        Color.fromRGBO(255, 255, 46, _getMoonOpacity(_nightTimePercentage)),
+        Color.fromRGBO(255, 255, 46, _moonConfig.getMoonOpacity()),
       ],
       stops: [0.5, 0.4],
     );
@@ -137,27 +133,20 @@ class PanoramicPainter extends CustomPainter {
           ..blendMode = BlendMode.hardLight);
   }
 
-  _getStarOpacity() {
-    return (rnd.nextInt(
-            1 + (_getMoonOpacity(_nightTimePercentage) * 100).round()) /
-        100);
-  }
-
   _drawStars(Canvas canvas, Size size) {
-    if (fullDayPercentage == 0) {
+    if (_fullDayPercentage >= 0.9999) {
       _starConfig.resetSettings();
     }
-    if (_starConfig.state == ConfigState.NULL) {
+    if (_starConfig.state == StarConfigState.NULL) {
       _starConfig.generateStarSettings(size);
     }
-    _starConfig.starsPositions.forEach((starInfo) => (canvas.drawRect(
-        Offset.zero.translate(starInfo.coordinate[0], starInfo.coordinate[1]) &
-            Size((size.height / 120), (size.height / 120)),
+    _starConfig.starsPositions.forEach((starInfo) => (canvas.drawCircle(
+        Offset.zero.translate(starInfo.coordinate[0], starInfo.coordinate[1]),
+        2 * _rnd.nextDouble(),
         Paint()
           ..strokeWidth = 30
           ..strokeCap = StrokeCap.round
-          ..color = Color.fromRGBO(255, 255, 46, _getStarOpacity())
-          ..blendMode = BlendMode.hardLight)));
+          ..color = Color.fromRGBO(255, 255, 46, starInfo.opacity))));
   }
 
   _drawSea(Canvas canvas, Size size) {
@@ -249,8 +238,9 @@ class PanoramicPainter extends CustomPainter {
 
   get calculateSessionPecentage {
     var sectionVal =
-        ((fullDayPercentage * 100) - ((fullDayPercentage * 100) % 25)).toInt();
-    return (fullDayPercentage - (sectionVal / 100)) / 0.25;
+        ((_fullDayPercentage * 100) - ((_fullDayPercentage * 100) % 25))
+            .toInt();
+    return (_fullDayPercentage - (sectionVal / 100)) / 0.25;
   }
 
   _drawSmallBackgroundLand(Canvas canvas, Size size) {
@@ -285,6 +275,10 @@ class PanoramicPainter extends CustomPainter {
 
   @override
   void paint(Canvas canvas, Size size) {
+    // TODO prevent uneccecary object drawing from knowing day or night
+    _fullDayPercentage = _dayNightConfig.dayNightInfo.fullDayPercentage;
+    _nightTimePercentage = _dayNightConfig.dayNightInfo.nightTimePercentage;
+    _dayTimePercentage = _dayNightConfig.dayNightInfo.dayTimePercentage;
     _drawSky(canvas, size);
     _drawSun(canvas, size);
     _drawMoon(canvas, size);
