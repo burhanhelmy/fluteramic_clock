@@ -1,4 +1,3 @@
-import 'dart:math';
 import 'package:fluteramic_clock/panoramic/panoramic_colors.dart';
 import 'package:fluteramic_clock/panoramic/provider/day_night_config.dart';
 import 'package:fluteramic_clock/panoramic/provider/moon_config.dart';
@@ -173,6 +172,25 @@ class PanoramicPainter extends CustomPainter {
         });
   }
 
+  _aeroplane(Canvas canvas, Size size) {
+    final textStyle =
+        TextStyle(color: Colors.black, fontSize: 30, fontFamily: 'AEROPLANE');
+    final textSpan = TextSpan(
+      text: 'w',
+      style: textStyle,
+    );
+    final textPainter = TextPainter(
+      text: textSpan,
+      textDirection: TextDirection.ltr,
+    );
+    textPainter.layout(
+      minWidth: 0,
+      maxWidth: size.width,
+    );
+    final offset = Offset(50, 100);
+    textPainter.paint(canvas, offset);
+  }
+
   _drawSea(Canvas canvas, Size size) {
     var sea = Offset.zero.translate(0, size.height / 2) & size;
     var seaGradient = LinearGradient(
@@ -313,6 +331,7 @@ class PanoramicPainter extends CustomPainter {
     _drawSmallMountain(canvas, size);
     _drawBackgroundLand(canvas, size);
     _drawSmallBackgroundLand(canvas, size);
+    _aeroplane(canvas, size);
   }
 
   @override
