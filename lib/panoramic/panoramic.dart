@@ -33,9 +33,9 @@ class _PanoramicState extends State<Panoramic>
       builder: (BuildContext context, Widget child) {
         _dayNightConfig.updateFulldayPercentage(
             newValue: _dayTimeConfig.getTimeAnimationOffset() - 0.3 >= 0
+                // 0.3 and 0.7 offset for current animation timeframe which is start animation consider from sunrise time
                 ? _dayTimeConfig.getTimeAnimationOffset() - 0.3
-                : _dayTimeConfig.getTimeAnimationOffset() +
-                    0.7); // 0.3 and 0.7 offset for current animation timeframe which is start animation consider from sunrise time
+                : _dayTimeConfig.getTimeAnimationOffset() + 0.7);
         return CustomPaint(
           painter: PanoramicPainter(),
           child: Container(),
