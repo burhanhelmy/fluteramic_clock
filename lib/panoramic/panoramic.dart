@@ -10,14 +10,14 @@ class Panoramic extends StatefulWidget {
 
 class _PanoramicState extends State<Panoramic>
     with SingleTickerProviderStateMixin {
-  AnimationController controller;
+  AnimationController microAnimationController;
   DayNightConfig _dayNightConfig = DayNightConfig();
   DateTimeConfig _dayTimeConfig = DateTimeConfig();
 
   @override
   void initState() {
     super.initState();
-    controller = AnimationController(
+    microAnimationController = AnimationController(
         // TODO: adjust lower bound base on current time
         // duration: const Duration(seconds: 100),
         duration: const Duration(seconds: 86400),
@@ -29,7 +29,7 @@ class _PanoramicState extends State<Panoramic>
   @override
   Widget build(BuildContext context) {
     return AnimatedBuilder(
-      animation: controller,
+      animation: microAnimationController,
       builder: (BuildContext context, Widget child) {
         _dayNightConfig.updateFulldayPercentage(
             newValue: _dayTimeConfig.getTimeAnimationOffset() - 0.3 >= 0
