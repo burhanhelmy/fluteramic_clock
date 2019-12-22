@@ -2,6 +2,7 @@ import 'dart:math';
 import 'package:fluteramic_clock/panoramic/panoramic_colors.dart';
 import 'package:fluteramic_clock/panoramic/provider/day_night_config.dart';
 import 'package:fluteramic_clock/panoramic/provider/moon_config.dart';
+import 'package:fluteramic_clock/panoramic/provider/sea_wave_config.dart';
 import 'package:fluteramic_clock/panoramic/provider/stars_config.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
@@ -17,12 +18,13 @@ enum ColorFor {
 
 class PanoramicPainter extends CustomPainter {
   StarsConfig _starConfig = StarsConfig();
+  SeaWaveConfig _seaWaveConfig = SeaWaveConfig();
   MoonConfig _moonConfig = MoonConfig();
   DayNightConfig _dayNightConfig = DayNightConfig();
   double _fullDayPercentage = 0;
   double _nightTimePercentage = 0;
   double _dayTimePercentage = 0;
-  Random _rnd = Random();
+  // Random _rnd = Random();
 
   _getColors(ColorFor colorFor) {
     var colors;
@@ -141,7 +143,6 @@ class PanoramicPainter extends CustomPainter {
       _starConfig.generateStarSettings(size);
     }
     _starConfig.starsPositions.forEach((starInfo) => {
-          // print(starInfo.size),
           canvas.drawCircle(
               Offset.zero
                   .translate(starInfo.coordinate[0], starInfo.coordinate[1]),
@@ -150,6 +151,25 @@ class PanoramicPainter extends CustomPainter {
                 ..strokeWidth = 30
                 ..strokeCap = StrokeCap.round
                 ..color = Color.fromRGBO(255, 255, 46, starInfo.opacity))
+        });
+  }
+
+  _drawSeaWave(Canvas canvas, Size size) {
+    if (_seaWaveConfig.state == SeaWaveConfigState.NULL) {
+      _seaWaveConfig.generateSeaWaveSettings(size);
+    }
+    _seaWaveConfig.seaWavesInfo.forEach((seaWaveInfo) => {
+          canvas.drawLine(
+              Offset.zero.translate(
+                  seaWaveInfo.coordinate[0], seaWaveInfo.coordinate[1]),
+              Offset.zero.translate(
+                  seaWaveInfo.coordinate[0] + seaWaveInfo.size.width,
+                  seaWaveInfo.coordinate[1]),
+              Paint()
+                ..strokeWidth = seaWaveInfo.size.height
+                ..strokeCap = StrokeCap.round
+                ..color = seaWaveInfo.color
+                ..blendMode = BlendMode.overlay)
         });
   }
 
@@ -166,6 +186,7 @@ class PanoramicPainter extends CustomPainter {
       sea,
       Paint()..shader = seaGradient.createShader(sea),
     );
+    _drawSeaWave(canvas, size);
   }
 
   _drawMountain(Canvas canvas, Size size) {

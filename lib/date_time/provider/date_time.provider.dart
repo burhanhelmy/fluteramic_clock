@@ -1,37 +1,22 @@
-import 'dart:math';
+enum DateTimeConfigState { OFFSET, NEWDAY }
 
-import 'package:flutter/material.dart';
+class DateTimeConfig {
+  static final DateTimeConfig _singleton = DateTimeConfig._internal();
 
-enum ConfigState { NULL, GENERATED }
-
-class DateTimeProvider {
-  static final DateTimeProvider _singleton = DateTimeProvider._internal();
-
-  factory DateTimeProvider() {
+  factory DateTimeConfig() {
     return _singleton;
   }
 
-  int starsCount = 0;
-  ConfigState state = ConfigState.NULL;
-  List<List<double>> starsPositions = [];
-  Random rnd = Random();
+  DateTime _initTime = DateTime.now();
+  DateTimeConfig._internal();
 
-  DateTimeProvider._internal();
-
-  generateStarSettings(Size size) {
-    starsCount = (50 + rnd.nextInt(100));
-    for (var i = 0; i < starsCount; i++) {
-      var xpos = (0 + rnd.nextInt(size.width.toInt())).toDouble();
-      var ypos = (0 + rnd.nextInt(size.height.toInt() ~/ 2)).toDouble();
-      starsPositions.add([xpos, ypos]);
-    }
-    print("generated");
-    state = ConfigState.GENERATED;
+  getTimeAnimationOffset() {
+    var now = DateTime.now();
+    var originTime = _initTime;
+    originTime = new DateTime(
+        originTime.year, originTime.month, originTime.day, 0, 0, 0, 0, 0);
+    return now.difference(originTime).inSeconds / 86400;
   }
 
-  resetSettings() {
-    starsCount = 0;
-    starsPositions = [];
-    state = ConfigState.NULL;
-  }
+  resetSettings() {}
 }

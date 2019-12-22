@@ -28,7 +28,6 @@ class StarsConfig {
       var xpos = (_rnd.nextInt(size.width.toInt())).toDouble();
       var ypos = (_rnd.nextInt(size.height.toInt() ~/ 2)).toDouble();
       var starSize = 2 * _rnd.nextDouble();
-      print(starSize);
       starsPositions.add(StarInfo([xpos, ypos], 0.1, starSize));
     }
     if (!starOpacityGeneratorIsRunning) {
@@ -44,7 +43,7 @@ class StarsConfig {
 
   startRegenerateStarOpacity() {
     starOpacityGeneratorIsRunning = true;
-    Timer.periodic(new Duration(milliseconds: 800), (timer) {
+    Timer.periodic(new Duration(milliseconds: 100), (timer) {
       for (var i = 0; i < starsCount; i++) {
         starsPositions[i].opacity = _getStarOpacity;
       }
