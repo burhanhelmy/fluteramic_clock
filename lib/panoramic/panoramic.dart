@@ -20,7 +20,7 @@ class _PanoramicState extends State<Panoramic>
     microAnimationController = AnimationController(
         // TODO: adjust lower bound base on current time
         // duration: const Duration(seconds: 100),
-        duration: const Duration(seconds: 86400),
+        duration: const Duration(seconds: 15),
         vsync: this,
         lowerBound: 0.0)
       ..repeat();
@@ -37,7 +37,7 @@ class _PanoramicState extends State<Panoramic>
                 ? _dayTimeConfig.getTimeAnimationOffset() - 0.3
                 : _dayTimeConfig.getTimeAnimationOffset() + 0.7);
         return CustomPaint(
-          painter: PanoramicPainter(),
+          painter: PanoramicPainter(microAnimationController.value),
           child: Container(),
         );
       },

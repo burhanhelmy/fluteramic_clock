@@ -1,4 +1,8 @@
+import 'dart:math';
+
 import 'package:fluteramic_clock/panoramic/panoramic_colors.dart';
+import 'package:fluteramic_clock/panoramic/provider/aeroplane_config.dart';
+import 'package:fluteramic_clock/panoramic/provider/cloud_config.dart';
 import 'package:fluteramic_clock/panoramic/provider/day_night_config.dart';
 import 'package:fluteramic_clock/panoramic/provider/moon_config.dart';
 import 'package:fluteramic_clock/panoramic/provider/sea_wave_config.dart';
@@ -16,14 +20,17 @@ enum ColorFor {
 }
 
 class PanoramicPainter extends CustomPainter {
+  PanoramicPainter(this._microAnimationValue);
+  double _microAnimationValue;
   StarsConfig _starConfig = StarsConfig();
   SeaWaveConfig _seaWaveConfig = SeaWaveConfig();
+  CloudConfig _cloudConfig = CloudConfig();
   MoonConfig _moonConfig = MoonConfig();
+  AeroplaneConfig _aeroplaneConfig = AeroplaneConfig();
   DayNightConfig _dayNightConfig = DayNightConfig();
   double _fullDayPercentage = 0;
   double _nightTimePercentage = 0;
   double _dayTimePercentage = 0;
-  // Random _rnd = Random();
 
   _getColors(ColorFor colorFor) {
     var colors;
@@ -134,14 +141,19 @@ class PanoramicPainter extends CustomPainter {
           ..blendMode = BlendMode.hardLight);
   }
 
-  _drawStars(Canvas canvas, Size size) {
+  _resetConfigSettings() {
     if (_fullDayPercentage >= 0.9999) {
       _starConfig.resetSettings();
+      _seaWaveConfig.resetSettings();
+      _cloudConfig.resetSettings();
     }
+  }
+
+  _drawStars(Canvas canvas, Size size) {
     if (_starConfig.state == StarConfigState.NULL) {
       _starConfig.generateStarSettings(size);
     }
-    _starConfig.starsPositions.forEach((starInfo) => {
+    _starConfig.stars.forEach((starInfo) => {
           canvas.drawCircle(
               Offset.zero
                   .translate(starInfo.coordinate[0], starInfo.coordinate[1]),
@@ -154,6 +166,7 @@ class PanoramicPainter extends CustomPainter {
   }
 
   _drawSeaWave(Canvas canvas, Size size) {
+    _resetConfigSettings();
     if (_seaWaveConfig.state == SeaWaveConfigState.NULL) {
       _seaWaveConfig.generateSeaWaveSettings(size);
     }
@@ -172,23 +185,86 @@ class PanoramicPainter extends CustomPainter {
         });
   }
 
-  _aeroplane(Canvas canvas, Size size) {
-    final textStyle =
-        TextStyle(color: Colors.black, fontSize: 30, fontFamily: 'AEROPLANE');
+  get _getPlaneOpacity {
+    var opacity =
+        (-4 * pow((_dayTimePercentage), 2)) + (4 * _dayTimePercentage);
+    if (opacity >= 0) {
+      return 1.0;
+    } else {
+      return 0.0;
+    }
+  }
+
+  _drawAeroplane(Canvas canvas, Size size) {
+    if (_microAnimationValue >= 0.99) {
+      _aeroplaneConfig.updateAeroplaneSettings(size);
+    }
+    final textStyle = TextStyle(
+      color: Colors.black.withOpacity(_getPlaneOpacity),
+      fontSize: 15,
+      fontFamily: 'PLANES',
+    );
     final textSpan = TextSpan(
-      text: 'w',
+      text: _aeroplaneConfig.char,
       style: textStyle,
     );
     final textPainter = TextPainter(
       text: textSpan,
-      textDirection: TextDirection.ltr,
+      textDirection: TextDirection.rtl,
     );
     textPainter.layout(
       minWidth: 0,
       maxWidth: size.width,
     );
-    final offset = Offset(50, 100);
+    var offset = Offset(size.width - (size.width * _microAnimationValue),
+        _aeroplaneConfig.aeroplaneHeight);
     textPainter.paint(canvas, offset);
+  }
+
+  get _getCloudOpacity {
+    var opacity =
+        (-4 * pow((_dayTimePercentage), 2)) + (4 * _dayTimePercentage);
+    if (opacity >= 0) {
+      return opacity;
+    } else {
+      return 0.0;
+    }
+  }
+
+  _drawCloud(Canvas canvas, Size size) {
+    if (_fullDayPercentage >= 0.9999) {
+      _cloudConfig.resetSettings();
+    }
+    if (_cloudConfig.state == CloudConfigState.NULL) {
+      _cloudConfig.generateCloudSettings(size);
+    }
+
+    var textStyle;
+    var textSpan;
+    TextPainter textPainter;
+    var offset;
+
+    _cloudConfig.clouds.forEach((cloud) => {
+          textStyle = TextStyle(
+            color: Colors.white.withOpacity(_getCloudOpacity),
+            fontSize: 40,
+            fontFamily: 'COMBO',
+          ),
+          textSpan = TextSpan(
+            text: cloud.char,
+            style: textStyle,
+          ),
+          textPainter = TextPainter(
+            text: textSpan,
+            textDirection: TextDirection.ltr,
+          ),
+          textPainter.layout(
+            minWidth: 0.0,
+            maxWidth: size.width,
+          ),
+          offset = Offset(cloud.offset[0], cloud.offset[1]),
+          textPainter.paint(canvas, offset)
+        });
   }
 
   _drawSea(Canvas canvas, Size size) {
@@ -326,12 +402,13 @@ class PanoramicPainter extends CustomPainter {
     _drawSun(canvas, size);
     _drawMoon(canvas, size);
     _drawStars(canvas, size);
+    _drawAeroplane(canvas, size);
+    _drawCloud(canvas, size);
     _drawSea(canvas, size);
     _drawMountain(canvas, size);
     _drawSmallMountain(canvas, size);
     _drawBackgroundLand(canvas, size);
     _drawSmallBackgroundLand(canvas, size);
-    _aeroplane(canvas, size);
   }
 
   @override
