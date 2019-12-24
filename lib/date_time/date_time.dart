@@ -33,7 +33,7 @@ class _DateTimeWidgetState extends State<DateTimeWidget> {
                 style: TextStyle(
                     shadows: [Shadow(color: Colors.white12, blurRadius: 100)],
                     color: Colors.white,
-                    fontSize: 300,
+                    fontSize: 170,
                     fontWeight: FontWeight.w900),
               ),
               Column(
@@ -46,7 +46,7 @@ class _DateTimeWidgetState extends State<DateTimeWidget> {
                           Shadow(color: Colors.white12, blurRadius: 100)
                         ],
                         color: Colors.white,
-                        fontSize: 40,
+                        fontSize: 30,
                         fontWeight: FontWeight.w900),
                   ),
                   Text(
@@ -56,7 +56,7 @@ class _DateTimeWidgetState extends State<DateTimeWidget> {
                           Shadow(color: Colors.white12, blurRadius: 100)
                         ],
                         color: Colors.white,
-                        fontSize: 40,
+                        fontSize: 30,
                         fontWeight: FontWeight.w900),
                   ),
                 ],
