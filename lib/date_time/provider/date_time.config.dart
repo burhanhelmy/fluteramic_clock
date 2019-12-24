@@ -10,13 +10,22 @@ class DateTimeConfig {
   DateTime _initTime = DateTime.now();
   DateTimeConfig._internal();
 
-  getTimeAnimationOffset() {
+  getTimeAnimationProgress() {
     var now = DateTime.now();
     var originTime = _initTime;
     const oneDayToSecond = 86400;
     originTime = new DateTime(
         originTime.year, originTime.month, originTime.day, 0, 0, 0, 0, 0);
-    return now.difference(originTime).inSeconds / oneDayToSecond;
+    var animationProgress =
+        (now.difference(originTime).inSeconds / oneDayToSecond).abs();
+    animationProgress = animationProgress - 0.3 >= 0
+        // 0.3 and 0.7 offset is required because of start animation consider from (0)sunrise time
+        ? animationProgress - 0.3
+        : animationProgress + 0.7;
+    if (animationProgress > 1) {
+      animationProgress = animationProgress - animationProgress.floor();
+    }
+    return animationProgress;
   }
 
   resetSettings() {}

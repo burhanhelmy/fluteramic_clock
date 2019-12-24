@@ -200,7 +200,7 @@ class PanoramicPainter extends CustomPainter {
       _aeroplaneConfig.updateAeroplaneSettings(size);
     }
     final textStyle = TextStyle(
-      color: Colors.black.withOpacity(_getPlaneOpacity),
+      color: Colors.grey.withOpacity(_getPlaneOpacity),
       fontSize: 15,
       fontFamily: 'PLANES',
     );
@@ -216,7 +216,8 @@ class PanoramicPainter extends CustomPainter {
       minWidth: 0,
       maxWidth: size.width,
     );
-    var offset = Offset(size.width - (size.width * _microAnimationValue),
+    var offset = Offset(
+        (size.width) - ((size.width + 100) * _microAnimationValue),
         _aeroplaneConfig.aeroplaneHeight);
     textPainter.paint(canvas, offset);
   }

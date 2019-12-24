@@ -55,7 +55,7 @@ class MountainColors {
     {
       0: Color(0xFF1C2005), //pagi
       25: Color(0xFF6E8300), // tengah hari
-      50: Color(0xFF3E2723), // petang
+      50: Color(0xFF63271C), // petang
       75: Color(0xFF061357), // malam
       100: Color(0xFF1C2005) //pagi
     },
@@ -66,7 +66,7 @@ class MountainColors {
     {
       0: Color(0xFF2F3607), //pagi
       25: Color(0xFF788F04), // tengah hari
-      50: Color(0xFF492B25), // petang
+      50: Color(0xFF63271B), // petang
       75: Color(0xFF10217A), // malam
       100: Color(0xFF2F3607) //pagi
     },
@@ -79,7 +79,7 @@ class SmallMountainColors {
     {
       0: Color(0xFF2A300A), //pagi
       25: Color(0xFF98B603), // tengah hari
-      50: Color(0xFF3E2723), // petang
+      50: Color(0xFF743126), // petang
       75: Color(0xFF132479), // malam
       100: Color(0xFF2A300A) //pagi
     },
@@ -90,7 +90,7 @@ class SmallMountainColors {
     {
       0: Color(0xFF3E4610), //pagi
       25: Color(0xFF88A013), // tengah hari
-      50: Color(0xFF5C3932), // petang
+      50: Color(0xFF8B2611), // petang
       75: Color(0xFF263892), // malam
       100: Color(0xFF3E4610) //pagi
     },
