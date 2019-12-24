@@ -32,7 +32,7 @@ class PanoramicPainter extends CustomPainter {
   double _nightTimePercentage = 0;
   double _dayTimePercentage = 0;
 
-  _getColors(ColorFor colorFor) {
+  List<Color> _getColors(ColorFor colorFor) {
     var colors;
     switch (colorFor) {
       case ColorFor.sky:
@@ -200,7 +200,8 @@ class PanoramicPainter extends CustomPainter {
       _aeroplaneConfig.updateAeroplaneSettings(size);
     }
     final textStyle = TextStyle(
-      color: Colors.grey.withOpacity(_getPlaneOpacity),
+      // color: Colors.grey.withOpacity(_getPlaneOpacity),
+      color: _getColors(ColorFor.sea)[0],
       fontSize: 15,
       fontFamily: 'PLANES',
     );
