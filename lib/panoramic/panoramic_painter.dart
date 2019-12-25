@@ -185,16 +185,6 @@ class PanoramicPainter extends CustomPainter {
         });
   }
 
-  get _getPlaneOpacity {
-    var opacity =
-        (-4 * pow((_dayTimePercentage), 2)) + (4 * _dayTimePercentage);
-    if (opacity >= 0) {
-      return 1.0;
-    } else {
-      return 0.0;
-    }
-  }
-
   _drawAeroplane(Canvas canvas, Size size) {
     if (_microAnimationValue >= 0.99) {
       _aeroplaneConfig.updateAeroplaneSettings(size);
@@ -386,6 +376,50 @@ class PanoramicPainter extends CustomPainter {
           ..shader = mountainGradient.createShader(mountainShaderContainer));
   }
 
+  _drawLightHouse(Canvas canvas, Size size) {
+    var lightGradient = RadialGradient(
+      colors: [Colors.yellow, Colors.white.withOpacity(0.3)],
+      stops: [0, 1],
+    );
+
+    Rect lightGradientContainer =
+        (Offset.zero.translate(size.width * 0.72, size.height * 0.03) &
+            Size(size.width * 0.4, size.width * 0.4));
+
+    // right light
+    canvas.drawArc(
+        Offset.zero.translate(size.width * 0.72, size.height * 0.03) &
+            Size(size.width * 0.4, size.width * 0.4),
+        3,
+        0.2,
+        true,
+        Paint()
+          ..shader = lightGradient.createShader(lightGradientContainer)
+          ..blendMode = BlendMode.luminosity);
+    // blink light
+    canvas.drawCircle(
+        Offset.zero.translate(size.width * 0.925, size.height * 0.44),
+        2,
+        Paint()..color = Colors.red);
+    // right light
+
+    canvas.drawArc(
+        Offset.zero.translate(size.width * 0.72, size.height * 0.03) &
+            Size(size.width * 0.4, size.width * 0.4),
+        -0.1,
+        0.2,
+        true,
+        Paint()
+          ..shader = lightGradient.createShader(lightGradientContainer)
+          ..blendMode = BlendMode.luminosity);
+
+    // tower
+    canvas.drawRect(
+        Offset.zero.translate(size.width * 0.92, size.height * 0.45) &
+            Size(size.width * 0.01, size.height * 0.05),
+        Paint());
+  }
+
   _getSunYValue(xVal) {
     const a = 0;
     const b = 1;
@@ -410,6 +444,7 @@ class PanoramicPainter extends CustomPainter {
     _drawMountain(canvas, size);
     _drawSmallMountain(canvas, size);
     _drawBackgroundLand(canvas, size);
+    _drawLightHouse(canvas, size);
     _drawSmallBackgroundLand(canvas, size);
   }
 
