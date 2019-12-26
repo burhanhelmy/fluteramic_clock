@@ -122,8 +122,11 @@ class PanoramicPainter extends CustomPainter {
   _drawMoon(Canvas canvas, Size size) {
     var moon = Offset.zero & size;
     var moonGradient = RadialGradient(
-      center: Alignment(0.38, -0.5 * _fullDayPercentage - 0.25), // added offset
-      radius: 0.25 * _nightTimePercentage,
+      center: Alignment(
+          0.60,
+          -0.4 * _fullDayPercentage -
+              0.25), // added offset TODO: need to change to night time percentage
+      radius: 0.23 * _nightTimePercentage,
       colors: [
         Colors.transparent,
         Color.fromRGBO(255, 255, 46, _moonConfig.getMoonOpacity()),
@@ -132,7 +135,7 @@ class PanoramicPainter extends CustomPainter {
     );
     canvas.drawCircle(
         Offset.zero
-            .translate(size.width / 1.5, size.width / 7.3), //ok for tablet
+            .translate(size.width / 1.3, size.width / 7.3), //ok for tablet
         70 * _nightTimePercentage,
         Paint()
           ..strokeWidth = 30
@@ -411,7 +414,7 @@ class PanoramicPainter extends CustomPainter {
           (Offset.zero.translate(size.width * 0.72, size.height * 0.03) &
               Size(size.width * 0.4, size.width * 0.4));
 
-      const topOffset = 0.12;
+      const topOffset = 0.005;
       const leftOffset = 0.725;
       // right light
       canvas.drawArc(
