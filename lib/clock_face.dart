@@ -14,7 +14,7 @@ class _ClockFaceState extends State<ClockFace> {
     return Scaffold(
       body: Stack(children: [
         Panoramic(),
-        // DateTimeWidget(),
+        DateTimeWidget(),
       ]),
     );
   }

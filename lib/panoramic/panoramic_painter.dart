@@ -375,6 +375,10 @@ class PanoramicPainter extends CustomPainter {
           ..shader = mountainGradient.createShader(mountainShaderContainer));
   }
 
+  _getMeteorColor() {
+    return (-4 * pow(_microAnimationValue, 2)) + _microAnimationValue * 4;
+  }
+
   _getBlinkLightOpacity() {
     const freq = 40;
     return sin(freq * (_microAnimationValue));

@@ -17,9 +17,9 @@ class _PanoramicState extends State<Panoramic>
   @override
   void initState() {
     super.initState();
-    microAnimationController = AnimationController(
-        duration: const Duration(seconds: 15), vsync: this, lowerBound: 0.0)
-      ..repeat();
+    microAnimationController =
+        AnimationController(duration: const Duration(seconds: 10), vsync: this)
+          ..repeat();
   }
 
   @override
@@ -30,6 +30,8 @@ class _PanoramicState extends State<Panoramic>
         _dayNightConfig.updateFulldayPercentage(
             newValue: _dayTimeConfig.getTimeAnimationProgress());
         return CustomPaint(
+          willChange: true,
+          isComplex: true,
           painter: PanoramicPainter(microAnimationController.value),
           child: Container(),
         );
