@@ -190,7 +190,6 @@ class PanoramicPainter extends CustomPainter {
       _aeroplaneConfig.updateAeroplaneSettings(size);
     }
     final textStyle = TextStyle(
-      // color: Colors.grey.withOpacity(_getPlaneOpacity),
       color: _getColors(ColorFor.sea)[0],
       fontSize: 15,
       fontFamily: 'PLANES',
@@ -376,48 +375,71 @@ class PanoramicPainter extends CustomPainter {
           ..shader = mountainGradient.createShader(mountainShaderContainer));
   }
 
+  _getBlinkLightOpacity() {
+    const freq = 40;
+    return sin(freq * (_microAnimationValue));
+  }
+
+  _getLightWidth() {
+    const freq = 20;
+    return sin(freq * (_microAnimationValue));
+  }
+
   _drawLightHouse(Canvas canvas, Size size) {
-    var lightGradient = RadialGradient(
-      colors: [Colors.yellow, Colors.white.withOpacity(0.3)],
-      stops: [0, 1],
-    );
-
-    Rect lightGradientContainer =
-        (Offset.zero.translate(size.width * 0.72, size.height * 0.03) &
-            Size(size.width * 0.4, size.width * 0.4));
-
-    // right light
-    canvas.drawArc(
-        Offset.zero.translate(size.width * 0.72, size.height * 0.03) &
-            Size(size.width * 0.4, size.width * 0.4),
-        3,
-        0.2,
-        true,
-        Paint()
-          ..shader = lightGradient.createShader(lightGradientContainer)
-          ..blendMode = BlendMode.luminosity);
-    // blink light
+    // tower head
     canvas.drawCircle(
         Offset.zero.translate(size.width * 0.925, size.height * 0.44),
-        2,
-        Paint()..color = Colors.red);
-    // right light
-
-    canvas.drawArc(
-        Offset.zero.translate(size.width * 0.72, size.height * 0.03) &
-            Size(size.width * 0.4, size.width * 0.4),
-        -0.1,
-        0.2,
-        true,
-        Paint()
-          ..shader = lightGradient.createShader(lightGradientContainer)
-          ..blendMode = BlendMode.luminosity);
+        2.7,
+        Paint()..color = Colors.black);
 
     // tower
     canvas.drawRect(
-        Offset.zero.translate(size.width * 0.92, size.height * 0.45) &
+        Offset.zero.translate(size.width * 0.92, size.height * 0.44) &
             Size(size.width * 0.01, size.height * 0.05),
-        Paint());
+        Paint()..color = Colors.white);
+    if (_moonConfig.getMoonOpacity() > 0) {
+      var lightGradient = RadialGradient(
+        colors: [Colors.yellow, Colors.white.withOpacity(0.0)],
+        stops: [0, 1 * _getLightWidth()],
+      );
+
+      Rect lightGradientContainer =
+          (Offset.zero.translate(size.width * 0.72, size.height * 0.03) &
+              Size(size.width * 0.4, size.width * 0.4));
+
+      const topOffset = 0.12;
+      const leftOffset = 0.725;
+      // right light
+      canvas.drawArc(
+          Offset.zero
+                  .translate(size.width * leftOffset, size.height * topOffset) &
+              Size(size.width * 0.4, size.width * 0.4),
+          3,
+          0.2,
+          true,
+          Paint()..shader = lightGradient.createShader(lightGradientContainer));
+
+      // right light
+      canvas.drawArc(
+          Offset.zero
+                  .translate(size.width * leftOffset, size.height * topOffset) &
+              Size((size.width * 0.4), size.width * 0.4),
+          -0.1,
+          0.2,
+          true,
+          Paint()..shader = lightGradient.createShader(lightGradientContainer));
+
+      // light leak light
+      canvas.drawCircle(
+          Offset.zero.translate(size.width * 0.925, size.height * 0.45),
+          6,
+          Paint()..color = Colors.yellow.withOpacity(0.2));
+      // blink light
+      canvas.drawCircle(
+          Offset.zero.translate(size.width * 0.925, size.height * 0.42),
+          2,
+          Paint()..color = Colors.red.withOpacity(_getBlinkLightOpacity()));
+    }
   }
 
   _getSunYValue(xVal) {
@@ -444,8 +466,8 @@ class PanoramicPainter extends CustomPainter {
     _drawMountain(canvas, size);
     _drawSmallMountain(canvas, size);
     _drawBackgroundLand(canvas, size);
-    _drawLightHouse(canvas, size);
     _drawSmallBackgroundLand(canvas, size);
+    _drawLightHouse(canvas, size);
   }
 
   @override
