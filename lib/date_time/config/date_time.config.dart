@@ -37,8 +37,6 @@ class DateTimeConfig {
     return _currentDemoTime.add(Duration(seconds: second.toInt()));
   }
 
-  resetSettings() {}
-
   get currentTime {
     return DateTime.now();
   }

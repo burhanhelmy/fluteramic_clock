@@ -77,9 +77,6 @@ class _NormalClockState extends State<NormalClock>
                           .format(_dateTimeConfig.currentTime)
                           .toString(),
                       style: TextStyle(
-                          // shadows: [
-                          //   Shadow(color: Colors.white12, blurRadius: 100)
-                          // ],
                           color: Colors.white,
                           fontSize: 170,
                           fontWeight: FontWeight.w900),
@@ -90,9 +87,6 @@ class _NormalClockState extends State<NormalClock>
                         Text(
                           DateFormat("ss").format(_dateTimeConfig.currentTime),
                           style: TextStyle(
-                              // shadows: [
-                              //   Shadow(color: Colors.white12, blurRadius: 100)
-                              // ],
                               color: Colors.white,
                               fontSize: 30,
                               fontWeight: FontWeight.w900),
@@ -100,9 +94,6 @@ class _NormalClockState extends State<NormalClock>
                         Text(
                           DateFormat("a").format(_dateTimeConfig.currentTime),
                           style: TextStyle(
-                              // shadows: [
-                              //   Shadow(color: Colors.white12, blurRadius: 100)
-                              // ],
                               color: Colors.white,
                               fontSize: 30,
                               fontWeight: FontWeight.w900),
@@ -132,9 +123,7 @@ class _NormalClockState extends State<NormalClock>
 
 class DemoClock extends StatefulWidget {
   final percent;
-
   DemoClock(this.percent);
-
   @override
   _DemoClockState createState() => _DemoClockState();
 }
