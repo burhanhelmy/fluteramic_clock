@@ -8,6 +8,7 @@ class DateTimeConfig {
   }
 
   DateTime _initTime = DateTime.now();
+  DateTime _currentDemoTime = DateTime.now();
   DateTimeConfig._internal();
 
   getTimeAnimationProgress() {
@@ -28,5 +29,17 @@ class DateTimeConfig {
     return animationProgress;
   }
 
+  getDemoTime(double animationProgress) {
+    var second = animationProgress * 86400;
+    _currentDemoTime = new DateTime(
+        _initTime.year, _initTime.month, _initTime.day, 10, 0, 0, 0, 0);
+
+    return _currentDemoTime.add(Duration(seconds: second.toInt()));
+  }
+
   resetSettings() {}
+
+  get currentTime {
+    return DateTime.now();
+  }
 }

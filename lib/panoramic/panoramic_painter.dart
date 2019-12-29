@@ -1,12 +1,12 @@
 import 'dart:math';
 
 import 'package:fluteramic_clock/panoramic/panoramic_colors.dart';
-import 'package:fluteramic_clock/panoramic/provider/aeroplane_config.dart';
-import 'package:fluteramic_clock/panoramic/provider/cloud_config.dart';
-import 'package:fluteramic_clock/panoramic/provider/day_night_config.dart';
-import 'package:fluteramic_clock/panoramic/provider/moon_config.dart';
-import 'package:fluteramic_clock/panoramic/provider/sea_wave_config.dart';
-import 'package:fluteramic_clock/panoramic/provider/stars_config.dart';
+import 'package:fluteramic_clock/panoramic/config/aeroplane_config.dart';
+import 'package:fluteramic_clock/panoramic/config/cloud_config.dart';
+import 'package:fluteramic_clock/panoramic/config/day_night_config.dart';
+import 'package:fluteramic_clock/panoramic/config/moon_config.dart';
+import 'package:fluteramic_clock/panoramic/config/sea_wave_config.dart';
+import 'package:fluteramic_clock/panoramic/config/stars_config.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 
@@ -192,8 +192,13 @@ class PanoramicPainter extends CustomPainter {
     if (_microAnimationValue >= 0.99) {
       _aeroplaneConfig.updateAeroplaneSettings(size);
     }
+
     final textStyle = TextStyle(
-      color: _getColors(ColorFor.sea)[0],
+      color: _getColors(ColorFor.sea)[0].withOpacity(
+          _dayNightConfig.dayNightInfo.dayTimePercentage >= 0.0 &&
+                  _dayNightConfig.dayNightInfo.dayTimePercentage <= 1.0
+              ? 1
+              : 0),
       fontSize: 15,
       fontFamily: 'PLANES',
     );
@@ -241,8 +246,8 @@ class PanoramicPainter extends CustomPainter {
     _cloudConfig.clouds.forEach((cloud) => {
           textStyle = TextStyle(
             color: Colors.white.withOpacity(_getCloudOpacity),
-            fontSize: 40,
-            fontFamily: 'COMBO',
+            fontSize: 90,
+            fontFamily: 'CLOUDS',
           ),
           textSpan = TextSpan(
             text: cloud.char,
@@ -280,8 +285,8 @@ class PanoramicPainter extends CustomPainter {
   _drawMountain(Canvas canvas, Size size) {
     var mountainPath = Path();
     var mountainGradient = LinearGradient(
-      begin: Alignment.bottomLeft,
-      end: Alignment.topRight,
+      begin: Alignment.centerLeft,
+      end: Alignment.centerRight,
       colors: _getColors(ColorFor.mountain),
       stops: [0, 1],
     );
@@ -298,7 +303,6 @@ class PanoramicPainter extends CustomPainter {
     canvas.drawPath(
         mountainPath,
         Paint()
-          ..isAntiAlias
           ..shader = mountainGradient.createShader(mountainShaderContainer));
   }
 
@@ -307,8 +311,8 @@ class PanoramicPainter extends CustomPainter {
     var mountainShaderContainer =
         Offset.zero.translate(0, size.height / 2) & size;
     var mountainGradient = LinearGradient(
-      begin: Alignment.bottomLeft,
-      end: Alignment.topRight,
+      begin: Alignment.centerLeft,
+      end: Alignment.centerRight,
       colors: _getColors(ColorFor.smallMountain),
       stops: [0, 1],
     );
@@ -323,7 +327,6 @@ class PanoramicPainter extends CustomPainter {
     canvas.drawPath(
         smallMountainPath,
         Paint()
-          ..isAntiAlias
           ..shader = mountainGradient.createShader(mountainShaderContainer));
   }
 
@@ -378,13 +381,10 @@ class PanoramicPainter extends CustomPainter {
           ..shader = mountainGradient.createShader(mountainShaderContainer));
   }
 
-  _getMeteorColor() {
-    return (-4 * pow(_microAnimationValue, 2)) + _microAnimationValue * 4;
-  }
-
   _getBlinkLightOpacity() {
     const freq = 40;
-    return sin(freq * (_microAnimationValue));
+    var val = sin(freq * (_microAnimationValue));
+    return val.abs();
   }
 
   _getLightWidth() {
@@ -406,8 +406,8 @@ class PanoramicPainter extends CustomPainter {
         Paint()..color = Colors.white);
     if (_moonConfig.getMoonOpacity() > 0) {
       var lightGradient = RadialGradient(
-        colors: [Colors.yellow, Colors.white.withOpacity(0.0)],
-        stops: [0, 1 * _getLightWidth()],
+        colors: [Colors.yellow, Colors.white.withOpacity(0)],
+        stops: [0, 1 * _getLightWidth().abs()],
       );
 
       Rect lightGradientContainer =

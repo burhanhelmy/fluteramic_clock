@@ -21,8 +21,9 @@ class CloudConfig {
   CloudConfig._internal();
 
   generateCloudSettings(Size size) {
-    var chars = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
-    cloudCount = (5 + _rnd.nextInt(10));
+    var chars = 'cdef';
+    // var chars = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
+    cloudCount = (6 + _rnd.nextInt(10));
     for (var i = 0; i < cloudCount; i++) {
       var xpos = (_rnd.nextInt(size.width.toInt())).toDouble();
       var ypos = (_rnd.nextInt(size.height.toInt() ~/ 3)).toDouble();

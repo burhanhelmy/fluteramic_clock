@@ -64,9 +64,6 @@ flutter:
     - family: PLANES
       fonts:
         - asset: fonts/PLANES.ttf
-    - family: COMBO
-      fonts:
-        - asset: fonts/combo.otf
   #   - family: Trajan Pro
   #     fonts:
   #       - asset: fonts/TrajanPro.ttf

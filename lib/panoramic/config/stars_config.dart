@@ -1,7 +1,7 @@
 import 'dart:async';
 import 'dart:math';
 
-import 'package:fluteramic_clock/panoramic/provider/moon_config.dart';
+import 'package:fluteramic_clock/panoramic/config/moon_config.dart';
 import 'package:flutter/material.dart';
 
 enum StarConfigState { NULL, GENERATED }
