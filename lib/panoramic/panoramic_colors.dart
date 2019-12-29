@@ -32,7 +32,7 @@ class SeaColors {
       0: Color(0xFFD68B00), //pagi
       25: Color(0xFF1F98C4), // tengah hari
       50: Color(0xFFA81F1F), // petang
-      75: Color(0xFF061357), // malam
+      75: Color(0xFF091552), // malam
       100: Color(0xFFD68B00) //pagi
     },
   );
@@ -53,22 +53,22 @@ class MountainColors {
   ColorSwatch primary = ColorSwatch(
     1,
     {
-      0: Color(0xFF1C2005), //pagi
-      25: Color(0xFF6E8300), // tengah hari
-      50: Color(0xFF3E2723), // petang
-      75: Color(0xFF061357), // malam
-      100: Color(0xFF1C2005) //pagi
+      0: Color(0xFFAF7C1D), //pagi
+      25: Color(0xFF5F6E13), // tengah hari
+      50: Color(0xFF7E2B1C), // petang
+      75: Color(0xFF15267A), // malam
+      100: Color(0xFFAF7C1D) //pagi
     },
   );
 
   ColorSwatch secondary = ColorSwatch(
     1,
     {
-      0: Color(0xFF2F3607), //pagi
-      25: Color(0xFF788F04), // tengah hari
-      50: Color(0xFF492B25), // petang
-      75: Color(0xFF10217A), // malam
-      100: Color(0xFF2F3607) //pagi
+      0: Color(0xFFD68B00), //pagi
+      25: Color(0xFFD4FF00), // tengah hari
+      50: Color(0xFFB81F00), // petang
+      75: Color(0xFF002AFF), // malam
+      100: Color(0xFFC58000) //pagi
     },
   );
 }
@@ -77,22 +77,22 @@ class SmallMountainColors {
   ColorSwatch primary = ColorSwatch(
     1,
     {
-      0: Color(0xFF2A300A), //pagi
-      25: Color(0xFF98B603), // tengah hari
-      50: Color(0xFF3E2723), // petang
-      75: Color(0xFF132479), // malam
-      100: Color(0xFF2A300A) //pagi
+      0: Color(0xFF553B0C), //pagi
+      25: Color(0xFF444D17), // tengah hari
+      50: Color(0xFF743126), // petang
+      75: Color(0xFF0F1B53), // malam
+      100: Color(0xFF553B0C) //pagi
     },
   );
 
   ColorSwatch secondary = ColorSwatch(
     1,
     {
-      0: Color(0xFF3E4610), //pagi
-      25: Color(0xFF88A013), // tengah hari
-      50: Color(0xFF5C3932), // petang
-      75: Color(0xFF263892), // malam
-      100: Color(0xFF3E4610) //pagi
+      0: Color(0xFFF19D00), //pagi
+      25: Color(0xFFCDF700), // tengah hari
+      50: Color(0xFFA71C00), // petang
+      75: Color(0xFF002AFF), // malam
+      100: Color(0xFFF19D00) //pagi
     },
   );
 }

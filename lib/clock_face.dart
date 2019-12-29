@@ -12,9 +12,13 @@ class _ClockFaceState extends State<ClockFace> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Stack(children: [
-        Panoramic(),
-        DateTimeWidget(),
+      body: Stack(alignment: AlignmentDirectional.center, children: [
+        Panoramic(
+          demoMode: false,
+        ),
+        DateTimeWidget(
+          demoMode: false,
+        ),
       ]),
     );
   }

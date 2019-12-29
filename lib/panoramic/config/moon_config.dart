@@ -1,6 +1,6 @@
 import 'dart:math';
 
-import 'package:fluteramic_clock/panoramic/provider/day_night_config.dart';
+import 'package:fluteramic_clock/panoramic/config/day_night_config.dart';
 
 class MoonConfig {
   static final MoonConfig _singleton = MoonConfig._internal();

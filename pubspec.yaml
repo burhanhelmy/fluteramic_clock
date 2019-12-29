@@ -58,6 +58,9 @@ flutter:
   # list giving the asset and other descriptors for the font. For
   # example:
   fonts:
+    - family: CLOUDS
+      fonts:
+        - asset: fonts/CLOUDS.ttf
     - family: PLANES
       fonts:
         - asset: fonts/PLANES.ttf
