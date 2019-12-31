@@ -20,7 +20,7 @@ class SeaWaveConfig {
   SeaWaveConfig._internal();
 
   generateSeaWaveSettings(Size size) {
-    seaWaveCount = (50 + _rnd.nextInt(100));
+    seaWaveCount = (30 + _rnd.nextInt(70));
     for (var i = 0; i < seaWaveCount; i++) {
       var xpos = (_rnd.nextInt(size.width.toInt())).toDouble();
       var ypos = (_rnd.nextInt((size.height.toInt() ~/ 2))).toDouble();

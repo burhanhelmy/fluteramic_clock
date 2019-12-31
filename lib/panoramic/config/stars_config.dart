@@ -1,7 +1,7 @@
 import 'dart:async';
 import 'dart:math';
 
-import 'package:fluteramic_clock/panoramic/provider/moon_config.dart';
+import 'package:fluteramic_clock/panoramic/config/moon_config.dart';
 import 'package:flutter/material.dart';
 
 enum StarConfigState { NULL, GENERATED }
@@ -15,7 +15,7 @@ class StarsConfig {
 
   int starsCount = 0;
   StarConfigState state = StarConfigState.NULL;
-  List<StarInfo> starsPositions = [];
+  List<StarInfo> stars = [];
   Random _rnd = Random();
   bool starOpacityGeneratorIsRunning = false;
   MoonConfig _moonConfig = MoonConfig();
@@ -28,7 +28,7 @@ class StarsConfig {
       var xpos = (_rnd.nextInt(size.width.toInt())).toDouble();
       var ypos = (_rnd.nextInt(size.height.toInt() ~/ 2)).toDouble();
       var starSize = 2 * _rnd.nextDouble();
-      starsPositions.add(StarInfo([xpos, ypos], 0.1, starSize));
+      stars.add(StarInfo([xpos, ypos], 0.1, starSize));
     }
     if (!starOpacityGeneratorIsRunning) {
       startRegenerateStarOpacity();
@@ -45,14 +45,14 @@ class StarsConfig {
     starOpacityGeneratorIsRunning = true;
     Timer.periodic(new Duration(milliseconds: 100), (timer) {
       for (var i = 0; i < starsCount; i++) {
-        starsPositions[i].opacity = _getStarOpacity;
+        stars[i].opacity = _getStarOpacity;
       }
     });
   }
 
   resetSettings() {
     starsCount = 0;
-    starsPositions = [];
+    stars = [];
     state = StarConfigState.NULL;
   }
 }

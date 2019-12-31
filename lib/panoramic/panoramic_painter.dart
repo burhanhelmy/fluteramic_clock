@@ -1,9 +1,12 @@
 import 'dart:math';
+
 import 'package:fluteramic_clock/panoramic/panoramic_colors.dart';
-import 'package:fluteramic_clock/panoramic/provider/day_night_config.dart';
-import 'package:fluteramic_clock/panoramic/provider/moon_config.dart';
-import 'package:fluteramic_clock/panoramic/provider/sea_wave_config.dart';
-import 'package:fluteramic_clock/panoramic/provider/stars_config.dart';
+import 'package:fluteramic_clock/panoramic/config/aeroplane_config.dart';
+import 'package:fluteramic_clock/panoramic/config/cloud_config.dart';
+import 'package:fluteramic_clock/panoramic/config/day_night_config.dart';
+import 'package:fluteramic_clock/panoramic/config/moon_config.dart';
+import 'package:fluteramic_clock/panoramic/config/sea_wave_config.dart';
+import 'package:fluteramic_clock/panoramic/config/stars_config.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 
@@ -17,16 +20,19 @@ enum ColorFor {
 }
 
 class PanoramicPainter extends CustomPainter {
+  PanoramicPainter(this._microAnimationValue);
+  double _microAnimationValue;
   StarsConfig _starConfig = StarsConfig();
   SeaWaveConfig _seaWaveConfig = SeaWaveConfig();
+  CloudConfig _cloudConfig = CloudConfig();
   MoonConfig _moonConfig = MoonConfig();
+  AeroplaneConfig _aeroplaneConfig = AeroplaneConfig();
   DayNightConfig _dayNightConfig = DayNightConfig();
   double _fullDayPercentage = 0;
   double _nightTimePercentage = 0;
   double _dayTimePercentage = 0;
-  // Random _rnd = Random();
 
-  _getColors(ColorFor colorFor) {
+  List<Color> _getColors(ColorFor colorFor) {
     var colors;
     switch (colorFor) {
       case ColorFor.sky:
@@ -116,8 +122,8 @@ class PanoramicPainter extends CustomPainter {
   _drawMoon(Canvas canvas, Size size) {
     var moon = Offset.zero & size;
     var moonGradient = RadialGradient(
-      center: Alignment(0.38, -0.5 * _fullDayPercentage - 0.25), // added offset
-      radius: 0.12 * _nightTimePercentage,
+      center: Alignment(0.60, -0.4 * _fullDayPercentage - 0.25),
+      radius: 0.23 * _nightTimePercentage,
       colors: [
         Colors.transparent,
         Color.fromRGBO(255, 255, 46, _moonConfig.getMoonOpacity()),
@@ -125,8 +131,7 @@ class PanoramicPainter extends CustomPainter {
       stops: [0.5, 0.4],
     );
     canvas.drawCircle(
-        Offset.zero
-            .translate(size.width / 1.5, size.width / 7.3), //ok for tablet
+        Offset.zero.translate(size.width / 1.3, size.width / 7.3),
         70 * _nightTimePercentage,
         Paint()
           ..strokeWidth = 30
@@ -135,14 +140,19 @@ class PanoramicPainter extends CustomPainter {
           ..blendMode = BlendMode.hardLight);
   }
 
-  _drawStars(Canvas canvas, Size size) {
+  _resetConfigSettings() {
     if (_fullDayPercentage >= 0.9999) {
       _starConfig.resetSettings();
+      _seaWaveConfig.resetSettings();
+      _cloudConfig.resetSettings();
     }
+  }
+
+  _drawStars(Canvas canvas, Size size) {
     if (_starConfig.state == StarConfigState.NULL) {
       _starConfig.generateStarSettings(size);
     }
-    _starConfig.starsPositions.forEach((starInfo) => {
+    _starConfig.stars.forEach((starInfo) => {
           canvas.drawCircle(
               Offset.zero
                   .translate(starInfo.coordinate[0], starInfo.coordinate[1]),
@@ -155,6 +165,7 @@ class PanoramicPainter extends CustomPainter {
   }
 
   _drawSeaWave(Canvas canvas, Size size) {
+    _resetConfigSettings();
     if (_seaWaveConfig.state == SeaWaveConfigState.NULL) {
       _seaWaveConfig.generateSeaWaveSettings(size);
     }
@@ -170,6 +181,84 @@ class PanoramicPainter extends CustomPainter {
                 ..strokeCap = StrokeCap.round
                 ..color = seaWaveInfo.color
                 ..blendMode = BlendMode.overlay)
+        });
+  }
+
+  _drawAeroplane(Canvas canvas, Size size) {
+    if (_microAnimationValue >= 0.99) {
+      _aeroplaneConfig.updateAeroplaneSettings(size);
+    }
+
+    final textStyle = TextStyle(
+      color: _getColors(ColorFor.sea)[0].withOpacity(
+          _dayNightConfig.dayNightInfo.dayTimePercentage >= 0.0 &&
+                  _dayNightConfig.dayNightInfo.dayTimePercentage <= 1.0
+              ? 1
+              : 0),
+      fontSize: 15,
+      fontFamily: 'PLANES',
+    );
+    final textSpan = TextSpan(
+      text: _aeroplaneConfig.char,
+      style: textStyle,
+    );
+    final textPainter = TextPainter(
+      text: textSpan,
+      textDirection: TextDirection.rtl,
+    );
+    textPainter.layout(
+      minWidth: 0,
+      maxWidth: size.width,
+    );
+    var offset = Offset(
+        (size.width) - ((size.width + 100) * _microAnimationValue),
+        _aeroplaneConfig.aeroplaneHeight);
+    textPainter.paint(canvas, offset);
+  }
+
+  get _getCloudOpacity {
+    var opacity =
+        (-4 * pow((_dayTimePercentage), 2)) + (4 * _dayTimePercentage);
+    if (opacity >= 0) {
+      return opacity;
+    } else {
+      return 0.0;
+    }
+  }
+
+  _drawCloud(Canvas canvas, Size size) {
+    if (_fullDayPercentage >= 0.9999) {
+      _cloudConfig.resetSettings();
+    }
+    if (_cloudConfig.state == CloudConfigState.NULL) {
+      _cloudConfig.generateCloudSettings(size);
+    }
+
+    var textStyle;
+    var textSpan;
+    TextPainter textPainter;
+    var offset;
+
+    _cloudConfig.clouds.forEach((cloud) => {
+          textStyle = TextStyle(
+            color: Colors.white.withOpacity(_getCloudOpacity),
+            fontSize: 90,
+            fontFamily: 'CLOUDS',
+          ),
+          textSpan = TextSpan(
+            text: cloud.char,
+            style: textStyle,
+          ),
+          textPainter = TextPainter(
+            text: textSpan,
+            textDirection: TextDirection.ltr,
+          ),
+          textPainter.layout(
+            minWidth: 0.0,
+            maxWidth: size.width,
+          ),
+          offset = Offset(cloud.offset[0], cloud.offset[1]),
+          textPainter.paint(canvas, offset)
         });
   }
 
@@ -192,8 +281,8 @@ class PanoramicPainter extends CustomPainter {
   _drawMountain(Canvas canvas, Size size) {
     var mountainPath = Path();
     var mountainGradient = LinearGradient(
-      begin: Alignment.bottomLeft,
-      end: Alignment.topRight,
+      begin: Alignment.centerLeft,
+      end: Alignment.centerRight,
       colors: _getColors(ColorFor.mountain),
       stops: [0, 1],
     );
@@ -210,7 +299,6 @@ class PanoramicPainter extends CustomPainter {
     canvas.drawPath(
         mountainPath,
         Paint()
-          ..isAntiAlias
           ..shader = mountainGradient.createShader(mountainShaderContainer));
   }
 
@@ -219,8 +307,8 @@ class PanoramicPainter extends CustomPainter {
     var mountainShaderContainer =
         Offset.zero.translate(0, size.height / 2) & size;
     var mountainGradient = LinearGradient(
-      begin: Alignment.bottomLeft,
-      end: Alignment.topRight,
+      begin: Alignment.centerLeft,
+      end: Alignment.centerRight,
       colors: _getColors(ColorFor.smallMountain),
       stops: [0, 1],
     );
@@ -235,7 +323,6 @@ class PanoramicPainter extends CustomPainter {
     canvas.drawPath(
         smallMountainPath,
         Paint()
-          ..isAntiAlias
           ..shader = mountainGradient.createShader(mountainShaderContainer));
   }
 
@@ -290,6 +377,74 @@ class PanoramicPainter extends CustomPainter {
           ..shader = mountainGradient.createShader(mountainShaderContainer));
   }
 
+  _getBlinkLightOpacity() {
+    const freq = 40;
+    var val = sin(freq * (_microAnimationValue));
+    return val.abs();
+  }
+
+  _getLightWidth() {
+    const freq = 20;
+    return sin(freq * (_microAnimationValue));
+  }
+
+  _drawLightHouse(Canvas canvas, Size size) {
+    // tower head
+    canvas.drawCircle(
+        Offset.zero.translate(size.width * 0.925, size.height * 0.44),
+        2.7,
+        Paint()..color = Colors.black);
+
+    // tower
+    canvas.drawRect(
+        Offset.zero.translate(size.width * 0.92, size.height * 0.44) &
+            Size(size.width * 0.01, size.height * 0.05),
+        Paint()..color = Colors.white);
+    if (_moonConfig.getMoonOpacity() > 0) {
+      var lightGradient = RadialGradient(
+        colors: [Colors.yellow, Colors.white.withOpacity(0)],
+        stops: [0, 1 * _getLightWidth().abs()],
+      );
+
+      Rect lightGradientContainer =
+          (Offset.zero.translate(size.width * 0.72, size.height * 0.03) &
+              Size(size.width * 0.4, size.width * 0.4));
+
+      const topOffset = 0.005;
+      const leftOffset = 0.725;
+      // right light
+      canvas.drawArc(
+          Offset.zero
+                  .translate(size.width * leftOffset, size.height * topOffset) &
+              Size(size.width * 0.4, size.width * 0.4),
+          3,
+          0.2,
+          true,
+          Paint()..shader = lightGradient.createShader(lightGradientContainer));
+
+      // right light
+      canvas.drawArc(
+          Offset.zero
+                  .translate(size.width * leftOffset, size.height * topOffset) &
+              Size((size.width * 0.4), size.width * 0.4),
+          -0.1,
+          0.2,
+          true,
+          Paint()..shader = lightGradient.createShader(lightGradientContainer));
+
+      // light leak light
+      canvas.drawCircle(
+          Offset.zero.translate(size.width * 0.925, size.height * 0.45),
+          6,
+          Paint()..color = Colors.yellow.withOpacity(0.2));
+      // blink light
+      canvas.drawCircle(
+          Offset.zero.translate(size.width * 0.925, size.height * 0.42),
+          2,
+          Paint()..color = Colors.red.withOpacity(_getBlinkLightOpacity()));
+    }
+  }
+
   _getSunYValue(xVal) {
     const a = 0;
     const b = 1;
@@ -308,11 +463,14 @@ class PanoramicPainter extends CustomPainter {
     _drawSun(canvas, size);
     _drawMoon(canvas, size);
     _drawStars(canvas, size);
+    _drawAeroplane(canvas, size);
+    _drawCloud(canvas, size);
     _drawSea(canvas, size);
     _drawMountain(canvas, size);
     _drawSmallMountain(canvas, size);
     _drawBackgroundLand(canvas, size);
     _drawSmallBackgroundLand(canvas, size);
+    _drawLightHouse(canvas, size);
   }
 
   @override

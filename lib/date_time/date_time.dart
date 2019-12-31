@@ -1,24 +1,138 @@
 import 'dart:async';
 
+import 'package:fluteramic_clock/date_time/config/date_time.config.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
 class DateTimeWidget extends StatefulWidget {
+  final bool demoMode;
+  DateTimeWidget({this.demoMode = false});
+
   @override
   _DateTimeWidgetState createState() => _DateTimeWidgetState();
 }
 
-class _DateTimeWidgetState extends State<DateTimeWidget> {
+class _DateTimeWidgetState extends State<DateTimeWidget>
+    with SingleTickerProviderStateMixin {
+  AnimationController microAnimationController;
+
   @override
   void initState() {
     super.initState();
-    Timer.periodic(new Duration(seconds: 1), (timer) {
-      setState(() {});
-    });
+    if (this.widget.demoMode) {
+      microAnimationController =
+          AnimationController(duration: const Duration(seconds: 1), vsync: this)
+            ..repeat();
+    }
   }
 
   @override
   Widget build(BuildContext context) {
+    return this.widget.demoMode
+        ? AnimatedBuilder(
+            animation: microAnimationController,
+            builder: (BuildContext context, Widget child) {
+              return DemoClock(microAnimationController.value);
+            },
+          )
+        : NormalClock();
+  }
+}
+
+class NormalClock extends StatefulWidget {
+  @override
+  _NormalClockState createState() => _NormalClockState();
+}
+
+class _NormalClockState extends State<NormalClock>
+    with SingleTickerProviderStateMixin {
+  DateTimeConfig _dateTimeConfig = DateTimeConfig();
+
+  AnimationController timerStream;
+
+  Stream<int> counterStream;
+
+  @override
+  void initState() {
+    super.initState();
+    counterStream = Stream<int>.periodic(Duration(seconds: 1), (x) => x);
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      child: StreamBuilder<Object>(
+          stream: counterStream,
+          builder: (context, snapshot) {
+            return Column(
+              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: <Widget>[
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: <Widget>[
+                    Text(
+                      DateFormat("h:mm")
+                          .format(_dateTimeConfig.currentTime)
+                          .toString(),
+                      style: TextStyle(
+                          color: Colors.white,
+                          fontSize: 170,
+                          fontWeight: FontWeight.w900),
+                    ),
+                    Column(
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      children: <Widget>[
+                        Text(
+                          DateFormat("ss").format(_dateTimeConfig.currentTime),
+                          style: TextStyle(
+                              color: Colors.white,
+                              fontSize: 30,
+                              fontWeight: FontWeight.w900),
+                        ),
+                        Text(
+                          DateFormat("a").format(_dateTimeConfig.currentTime),
+                          style: TextStyle(
+                              color: Colors.white,
+                              fontSize: 30,
+                              fontWeight: FontWeight.w900),
+                        ),
+                      ],
+                    ),
+                  ],
+                ),
+                Center(
+                  child: Text(
+                    DateFormat("EEEE,  d MMM yy")
+                        .format(_dateTimeConfig.currentTime)
+                        .toString(),
+                    style: TextStyle(
+                        // shadows: [Shadow(color: Colors.white12, blurRadius: 100)],
+                        color: Colors.white,
+                        fontSize: 30,
+                        fontWeight: FontWeight.w800),
+                  ),
+                ),
+              ],
+            );
+          }),
+    );
+  }
+}
+
+class DemoClock extends StatefulWidget {
+  final percent;
+  DemoClock(this.percent);
+  @override
+  _DemoClockState createState() => _DemoClockState();
+}
+
+class _DemoClockState extends State<DemoClock> {
+  DateTimeConfig _dateTimeConfig = DateTimeConfig();
+  @override
+  Widget build(BuildContext context) {
+    print('demo clock');
     return Container(
       child: Column(
         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
@@ -29,34 +143,38 @@ class _DateTimeWidgetState extends State<DateTimeWidget> {
             crossAxisAlignment: CrossAxisAlignment.center,
             children: <Widget>[
               Text(
-                (new DateFormat("h:mm").format(new DateTime.now())).toString(),
+                DateFormat("h:mm")
+                    .format(_dateTimeConfig.getDemoTime(this.widget.percent))
+                    .toString(),
                 style: TextStyle(
                     shadows: [Shadow(color: Colors.white12, blurRadius: 100)],
                     color: Colors.white,
-                    fontSize: 300,
+                    fontSize: 170,
                     fontWeight: FontWeight.w900),
               ),
               Column(
                 mainAxisAlignment: MainAxisAlignment.start,
                 children: <Widget>[
                   Text(
-                    (new DateFormat("ss").format(new DateTime.now())),
+                    DateFormat("ss").format(
+                        _dateTimeConfig.getDemoTime(this.widget.percent)),
                     style: TextStyle(
                         shadows: [
                           Shadow(color: Colors.white12, blurRadius: 100)
                         ],
                         color: Colors.white,
-                        fontSize: 40,
+                        fontSize: 30,
                         fontWeight: FontWeight.w900),
                   ),
                   Text(
-                    (new DateFormat("a").format(new DateTime.now())),
+                    DateFormat("a").format(
+                        _dateTimeConfig.getDemoTime(this.widget.percent)),
                     style: TextStyle(
                         shadows: [
                           Shadow(color: Colors.white12, blurRadius: 100)
                         ],
                         color: Colors.white,
-                        fontSize: 40,
+                        fontSize: 30,
                         fontWeight: FontWeight.w900),
                   ),
                 ],
@@ -65,7 +183,8 @@ class _DateTimeWidgetState extends State<DateTimeWidget> {
           ),
           Center(
             child: Text(
-              (new DateFormat("EEEE,  d MMM yy").format(new DateTime.now()))
+              DateFormat("EEEE,  d MMM yy")
+                  .format(_dateTimeConfig.getDemoTime(this.widget.percent))
                   .toString(),
               style: TextStyle(
                   shadows: [Shadow(color: Colors.white12, blurRadius: 100)],
