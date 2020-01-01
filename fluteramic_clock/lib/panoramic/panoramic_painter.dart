@@ -122,8 +122,8 @@ class PanoramicPainter extends CustomPainter {
   _drawMoon(Canvas canvas, Size size) {
     var moon = Offset.zero & size;
     var moonGradient = RadialGradient(
-      center: Alignment(0.61, -0.4 * _fullDayPercentage - 0.25),
-      radius: 0.23 * _nightTimePercentage,
+      center: Alignment(0.61, -0.45 * _fullDayPercentage - 0.25),
+      radius: 0.25 * _nightTimePercentage,
       colors: [
         Colors.transparent,
         Color.fromRGBO(255, 255, 46, _moonConfig.getMoonOpacity()),
