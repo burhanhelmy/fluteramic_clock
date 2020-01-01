@@ -1,6 +1,5 @@
 import 'dart:async';
 
-import 'package:auto_size_text/auto_size_text.dart';
 import 'package:fluteramic_clock/date_time/config/date_time.config.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
@@ -73,38 +72,36 @@ class _NormalClockState extends State<NormalClock>
                 children: <Widget>[
                   Row(
                     mainAxisAlignment: MainAxisAlignment.center,
-                    crossAxisAlignment: CrossAxisAlignment.start,
+                    crossAxisAlignment: CrossAxisAlignment.center,
                     children: <Widget>[
-                      Expanded(
-                        child: AutoSizeText(
-                          DateFormat("h:mm")
-                              .format(_dateTimeConfig.currentTime)
-                              .toString(),
-                          style: TextStyle(
-                              color: Colors.white,
-                              fontSize: 520,
-                              fontWeight: FontWeight.w900),
-                          maxLines: 1,
-                        ),
+                      Text(
+                        DateFormat("h:mm")
+                            .format(_dateTimeConfig.currentTime)
+                            .toString(),
+                        style: TextStyle(
+                            color: Colors.white,
+                            fontSize: 150,
+                            fontWeight: FontWeight.w900),
+                        maxLines: 1,
                       ),
                       Padding(
-                        padding: const EdgeInsets.only(top: 45.0),
+                        padding: const EdgeInsets.only(top: 40.0),
                         child: Column(
                           children: <Widget>[
-                            AutoSizeText(
+                            Text(
                               DateFormat("ss")
                                   .format(_dateTimeConfig.currentTime),
                               style: TextStyle(
                                   color: Colors.white,
-                                  fontSize: 20,
+                                  fontSize: 25,
                                   fontWeight: FontWeight.w900),
                             ),
-                            AutoSizeText(
+                            Text(
                               DateFormat("a")
                                   .format(_dateTimeConfig.currentTime),
                               style: TextStyle(
                                   color: Colors.white,
-                                  fontSize: 20,
+                                  fontSize: 25,
                                   fontWeight: FontWeight.w900),
                             ),
                           ],
@@ -113,14 +110,14 @@ class _NormalClockState extends State<NormalClock>
                     ],
                   ),
                   Center(
-                    child: AutoSizeText(
+                    child: Text(
                       DateFormat("EEE,  d MMM yy")
                           .format(_dateTimeConfig.currentTime)
                           .toString(),
                       style: TextStyle(
                           // shadows: [Shadow(color: Colors.white12, blurRadius: 100)],
                           color: Colors.white,
-                          fontSize: 20,
+                          fontSize: 25,
                           fontWeight: FontWeight.w900),
                     ),
                   ),
@@ -151,38 +148,36 @@ class _DemoClockState extends State<DemoClock> {
         children: <Widget>[
           Row(
             mainAxisAlignment: MainAxisAlignment.center,
-            crossAxisAlignment: CrossAxisAlignment.start,
+            crossAxisAlignment: CrossAxisAlignment.end,
             children: <Widget>[
-              Expanded(
-                child: AutoSizeText(
-                  DateFormat("h:mm")
-                      .format(_dateTimeConfig.getDemoTime(this.widget.percent))
-                      .toString(),
-                  style: TextStyle(
-                      color: Colors.white,
-                      fontSize: 520,
-                      fontWeight: FontWeight.w900),
-                  maxLines: 1,
-                ),
+              Text(
+                DateFormat("h:mm")
+                    .format(_dateTimeConfig.getDemoTime(this.widget.percent))
+                    .toString(),
+                style: TextStyle(
+                    color: Colors.white,
+                    fontSize: 150,
+                    fontWeight: FontWeight.w900),
+                maxLines: 1,
               ),
               Padding(
                 padding: const EdgeInsets.only(top: 45.0),
                 child: Column(
                   children: <Widget>[
-                    AutoSizeText(
+                    Text(
                       DateFormat("ss").format(
                           _dateTimeConfig.getDemoTime(this.widget.percent)),
                       style: TextStyle(
                           color: Colors.white,
-                          fontSize: 20,
+                          fontSize: 25,
                           fontWeight: FontWeight.w900),
                     ),
-                    AutoSizeText(
+                    Text(
                       DateFormat("a").format(
                           _dateTimeConfig.getDemoTime(this.widget.percent)),
                       style: TextStyle(
                           color: Colors.white,
-                          fontSize: 20,
+                          fontSize: 25,
                           fontWeight: FontWeight.w900),
                     ),
                   ],
@@ -191,14 +186,14 @@ class _DemoClockState extends State<DemoClock> {
             ],
           ),
           Center(
-            child: AutoSizeText(
+            child: Text(
               DateFormat("EEE,  d MMM yy")
                   .format(_dateTimeConfig.getDemoTime(this.widget.percent))
                   .toString(),
               style: TextStyle(
                   // shadows: [Shadow(color: Colors.white12, blurRadius: 100)],
                   color: Colors.white,
-                  fontSize: 20,
+                  fontSize: 25,
                   fontWeight: FontWeight.w900),
             ),
           ),
