@@ -21,7 +21,7 @@ class _PanoramicState extends State<Panoramic>
   void initState() {
     super.initState();
     microAnimationController =
-        AnimationController(duration: const Duration(seconds: 20), vsync: this)
+        AnimationController(duration: const Duration(seconds: 25), vsync: this)
           ..repeat();
   }
 

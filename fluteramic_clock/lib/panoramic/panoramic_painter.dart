@@ -123,7 +123,7 @@ class PanoramicPainter extends CustomPainter {
     var moon = Offset.zero & size;
     var moonGradient = RadialGradient(
       center: Alignment(0.61, -0.4 * _fullDayPercentage - 0.25),
-      radius: 0.23 * _nightTimePercentage,
+      radius: 0.10 * _nightTimePercentage,
       colors: [
         Colors.transparent,
         Color.fromRGBO(255, 255, 46, _moonConfig.getMoonOpacity()),
@@ -242,7 +242,7 @@ class PanoramicPainter extends CustomPainter {
     _cloudConfig.clouds.forEach((cloud) => {
           textStyle = TextStyle(
             color: Colors.white.withOpacity(_getCloudOpacity),
-            fontSize: 90,
+            fontSize: 200,
             fontFamily: 'CLOUDS',
           ),
           textSpan = TextSpan(
@@ -411,7 +411,7 @@ class PanoramicPainter extends CustomPainter {
               Size(size.width * 0.4, size.width * 0.4));
 
       // right light
-      const topOffset = 0.11;
+      const topOffset = 0.17;
       const leftOffset = 0.725;
       canvas.drawArc(
           Offset.zero
