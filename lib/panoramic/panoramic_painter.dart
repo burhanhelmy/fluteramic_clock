@@ -122,7 +122,7 @@ class PanoramicPainter extends CustomPainter {
   _drawMoon(Canvas canvas, Size size) {
     var moon = Offset.zero & size;
     var moonGradient = RadialGradient(
-      center: Alignment(0.60, -0.4 * _fullDayPercentage - 0.25),
+      center: Alignment(0.61, -0.4 * _fullDayPercentage - 0.25),
       radius: 0.23 * _nightTimePercentage,
       colors: [
         Colors.transparent,
@@ -410,9 +410,9 @@ class PanoramicPainter extends CustomPainter {
           (Offset.zero.translate(size.width * 0.72, size.height * 0.03) &
               Size(size.width * 0.4, size.width * 0.4));
 
-      const topOffset = 0.005;
-      const leftOffset = 0.725;
       // right light
+      const topOffset = 0.11;
+      const leftOffset = 0.725;
       canvas.drawArc(
           Offset.zero
                   .translate(size.width * leftOffset, size.height * topOffset) &
@@ -434,12 +434,12 @@ class PanoramicPainter extends CustomPainter {
 
       // light leak light
       canvas.drawCircle(
-          Offset.zero.translate(size.width * 0.925, size.height * 0.45),
-          6,
-          Paint()..color = Colors.yellow.withOpacity(0.2));
+          Offset.zero.translate(size.width * 0.925, size.height * 0.445),
+          12,
+          Paint()..color = Colors.yellow.withOpacity(0.15));
       // blink light
       canvas.drawCircle(
-          Offset.zero.translate(size.width * 0.925, size.height * 0.42),
+          Offset.zero.translate(size.width * 0.925, size.height * 0.43),
           2,
           Paint()..color = Colors.red.withOpacity(_getBlinkLightOpacity()));
     }
