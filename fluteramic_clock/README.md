@@ -8,7 +8,7 @@ Implemented by using custom painter on single canvas for the panoramic backgroun
 
 This project is created because of the [flutter clock competition](https://flutter.dev/clock)
 
- *The clock face is optimized for lenovo smart clock display 4" 800 x 480, 5:3 Aspect ratio
+  **NOTE** : The clock face is optimized for lenovo smart clock display 4" 800 x 480, 5:3 Aspect ratio
 
 ## Features:
 
@@ -29,7 +29,7 @@ Element list
    * Sun (daytime)
    * Small land
 
-## Demo Mode
+## Demo mode
 
 Demo mode can be enable to the clock and background by replacing this line of code at this [file](lib/clock_face.dart)
 
