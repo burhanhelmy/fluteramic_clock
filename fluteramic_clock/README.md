@@ -1,8 +1,8 @@
-# Flutteramic Clock
+# Fluteramic Clock
 
 <img src='fluteramic.gif' width='350'>
 
-Welcome to Flutteramic Clock. A beautiful dynamic background clock face.
+Welcome to Fluteramic Clock. A beautiful dynamic background clock face.
 
 Implemented by using custom painter on single canvas for the panoramic background.
 
