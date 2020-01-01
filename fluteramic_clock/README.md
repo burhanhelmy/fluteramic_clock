@@ -1,6 +1,6 @@
 # Flutteramic Clock
 
-<img src='analog_clock/analog.gif' width='350'>
+<img src='fluteramic.gif' width='350'>
 
 Welcome to Flutteramic Clock. A beautiful dynamic background clock face.
 
