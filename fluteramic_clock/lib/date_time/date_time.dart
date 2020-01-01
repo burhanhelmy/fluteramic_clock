@@ -64,65 +64,61 @@ class _NormalClockState extends State<NormalClock>
       child: StreamBuilder<Object>(
           stream: counterStream,
           builder: (context, snapshot) {
-            return Padding(
-              padding: const EdgeInsets.only(left: 60, right: 60),
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                crossAxisAlignment: CrossAxisAlignment.center,
-                children: <Widget>[
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    children: <Widget>[
-                      Text(
-                        DateFormat("h:mm")
-                            .format(_dateTimeConfig.currentTime)
-                            .toString(),
-                        style: TextStyle(
-                            color: Colors.white,
-                            fontSize: 150,
-                            fontWeight: FontWeight.w900),
-                        maxLines: 1,
-                      ),
-                      Padding(
-                        padding: const EdgeInsets.only(top: 40.0),
-                        child: Column(
-                          children: <Widget>[
-                            Text(
-                              DateFormat("ss")
-                                  .format(_dateTimeConfig.currentTime),
-                              style: TextStyle(
-                                  color: Colors.white,
-                                  fontSize: 25,
-                                  fontWeight: FontWeight.w900),
-                            ),
-                            Text(
-                              DateFormat("a")
-                                  .format(_dateTimeConfig.currentTime),
-                              style: TextStyle(
-                                  color: Colors.white,
-                                  fontSize: 25,
-                                  fontWeight: FontWeight.w900),
-                            ),
-                          ],
-                        ),
-                      ),
-                    ],
-                  ),
-                  Center(
-                    child: Text(
-                      DateFormat("EEE,  d MMM yy")
+            return Column(
+              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: <Widget>[
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: <Widget>[
+                    Text(
+                      DateFormat("h:mm")
                           .format(_dateTimeConfig.currentTime)
                           .toString(),
                       style: TextStyle(
-                          // shadows: [Shadow(color: Colors.white12, blurRadius: 100)],
                           color: Colors.white,
-                          fontSize: 25,
+                          fontSize: 150,
                           fontWeight: FontWeight.w900),
+                      maxLines: 1,
                     ),
+                    Padding(
+                      padding: const EdgeInsets.only(top: 40.0),
+                      child: Column(
+                        children: <Widget>[
+                          Text(
+                            DateFormat("ss")
+                                .format(_dateTimeConfig.currentTime),
+                            style: TextStyle(
+                                color: Colors.white,
+                                fontSize: 25,
+                                fontWeight: FontWeight.w900),
+                          ),
+                          Text(
+                            DateFormat("a").format(_dateTimeConfig.currentTime),
+                            style: TextStyle(
+                                color: Colors.white,
+                                fontSize: 25,
+                                fontWeight: FontWeight.w900),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ],
+                ),
+                Center(
+                  child: Text(
+                    DateFormat("EEE,  d MMM yy")
+                        .format(_dateTimeConfig.currentTime)
+                        .toString(),
+                    style: TextStyle(
+                        // shadows: [Shadow(color: Colors.white12, blurRadius: 100)],
+                        color: Colors.white,
+                        fontSize: 25,
+                        fontWeight: FontWeight.w900),
                   ),
-                ],
-              ),
+                ),
+              ],
             );
           }),
     );
@@ -140,65 +136,62 @@ class _DemoClockState extends State<DemoClock> {
   DateTimeConfig _dateTimeConfig = DateTimeConfig();
   @override
   Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.only(left: 60, right: 60),
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-        crossAxisAlignment: CrossAxisAlignment.center,
-        children: <Widget>[
-          Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            crossAxisAlignment: CrossAxisAlignment.end,
-            children: <Widget>[
-              Text(
-                DateFormat("h:mm")
-                    .format(_dateTimeConfig.getDemoTime(this.widget.percent))
-                    .toString(),
-                style: TextStyle(
-                    color: Colors.white,
-                    fontSize: 150,
-                    fontWeight: FontWeight.w900),
-                maxLines: 1,
-              ),
-              Padding(
-                padding: const EdgeInsets.only(top: 45.0),
-                child: Column(
-                  children: <Widget>[
-                    Text(
-                      DateFormat("ss").format(
-                          _dateTimeConfig.getDemoTime(this.widget.percent)),
-                      style: TextStyle(
-                          color: Colors.white,
-                          fontSize: 25,
-                          fontWeight: FontWeight.w900),
-                    ),
-                    Text(
-                      DateFormat("a").format(
-                          _dateTimeConfig.getDemoTime(this.widget.percent)),
-                      style: TextStyle(
-                          color: Colors.white,
-                          fontSize: 25,
-                          fontWeight: FontWeight.w900),
-                    ),
-                  ],
-                ),
-              ),
-            ],
-          ),
-          Center(
-            child: Text(
-              DateFormat("EEE,  d MMM yy")
+    return Column(
+      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+      crossAxisAlignment: CrossAxisAlignment.center,
+      children: <Widget>[
+        Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: <Widget>[
+            Text(
+              DateFormat("h:mm")
                   .format(_dateTimeConfig.getDemoTime(this.widget.percent))
                   .toString(),
               style: TextStyle(
-                  // shadows: [Shadow(color: Colors.white12, blurRadius: 100)],
                   color: Colors.white,
-                  fontSize: 25,
+                  fontSize: 150,
                   fontWeight: FontWeight.w900),
+              maxLines: 1,
             ),
+            Padding(
+              padding: const EdgeInsets.only(top: 45.0),
+              child: Column(
+                children: <Widget>[
+                  Text(
+                    DateFormat("ss").format(
+                        _dateTimeConfig.getDemoTime(this.widget.percent)),
+                    style: TextStyle(
+                        color: Colors.white,
+                        fontSize: 25,
+                        fontWeight: FontWeight.w900),
+                  ),
+                  Text(
+                    DateFormat("a").format(
+                        _dateTimeConfig.getDemoTime(this.widget.percent)),
+                    style: TextStyle(
+                        color: Colors.white,
+                        fontSize: 25,
+                        fontWeight: FontWeight.w900),
+                  ),
+                ],
+              ),
+            ),
+          ],
+        ),
+        Center(
+          child: Text(
+            DateFormat("EEE,  d MMM yy")
+                .format(_dateTimeConfig.getDemoTime(this.widget.percent))
+                .toString(),
+            style: TextStyle(
+                // shadows: [Shadow(color: Colors.white12, blurRadius: 100)],
+                color: Colors.white,
+                fontSize: 25,
+                fontWeight: FontWeight.w900),
           ),
-        ],
-      ),
+        ),
+      ],
     );
   }
 }
